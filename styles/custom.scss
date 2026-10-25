@@ -1,0 +1,71 @@
+@use "./base.scss";
+
+// 全ページ共通の見た目の調整。GitHub Actions がビルド時に quartz/styles/custom.scss へコピーする。
+// 色は quartz.config.ts のテーマ変数を使うので、ダークモードでもそのまま切り替わる。
+
+// 本文: 日本語は行間を広めに
+article {
+  & p,
+  & li {
+    line-height: 1.85;
+  }
+
+  & li {
+    margin: 0.2rem 0;
+  }
+}
+
+// 見出し: h2 に区切り線を付けて、長いノートでも節の切れ目がわかるように
+article h2 {
+  margin-top: 2.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+article h3 {
+  margin-top: 1.8rem;
+}
+
+// 表: 横幅いっぱい、行ごとに罫線、見出し行に薄い背景
+.table-container {
+  margin: 1rem 0 1.5rem;
+
+  & > table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+}
+
+th {
+  padding: 0.55rem 0.8rem;
+  background: var(--highlight);
+  border-bottom: 2px solid var(--gray);
+  font-weight: 700;
+}
+
+td {
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--lightgray);
+  vertical-align: top;
+}
+
+tr:last-child td {
+  border-bottom: 1px solid var(--lightgray);
+}
+
+// お知らせ欄(callout): 角丸
+.callout {
+  border-radius: 8px;
+}
+
+// インラインコード: 本文中で目立ちすぎない薄い背景
+p > code,
+li > code,
+td > code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: var(--highlight);
+  font-size: 0.9em;
+}

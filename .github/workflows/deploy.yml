@@ -38,6 +38,7 @@ jobs:
       - name: Apply config and content
         run: |
           cp site/quartz.config.ts site/quartz.layout.ts quartz/
+          cp site/styles/custom.scss quartz/quartz/styles/custom.scss
           rm -rf quartz/content
           cp -R site/content quartz/content
       - name: Install Dependencies

@@ -12,6 +12,7 @@ Obsidian の「学習」フォルダを元に、[Quartz](https://quartz.jzhao.xy
 | `pages/index.md` | トップページ(`{{total}}` と `{{n:トピック}}` は sync 時にノート数へ置き換わる) |
 | `scripts/sync.py` | Obsidian から公開用ノートをコピーし、除外ノートへの参照などを取り除く |
 | `quartz.config.ts` / `quartz.layout.ts` | Quartz の設定 |
+| `styles/custom.scss` | 全ページ共通の追加 CSS(行間・見出し・表・callout・コード) |
 | `.github/workflows/deploy.yml` | push 時に Quartz を取得してビルドし、GitHub Pages に公開 |
 
 ## 更新手順
