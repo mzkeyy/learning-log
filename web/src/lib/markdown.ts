@@ -16,7 +16,44 @@ import remarkRehype from "remark-rehype";
 import { bundledLanguages } from "shiki";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
-import { getNoteMap, WIKILINK } from "./notes";
+import { BASE_PATH } from "./config";
+import { getAssetMap, getNoteMap, WIKILINK } from "./notes";
+
+// ![[名前.svg]] / ![[名前.svg|代替テキスト]] / ![[名前.png|600]](数字は幅)
+const EMBED = /!\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g;
+
+/**
+ * Obsidian の画像の埋め込み(![[…]])を <img> にする remark プラグイン。
+ * wikilink より先に処理する([[…]] の部分をリンクにされないように)。
+ */
+function remarkEmbed() {
+  const assets = getAssetMap();
+  return (tree: MdastRoot) => {
+    visit(tree, "text", (node, index, parent) => {
+      if (!parent || index === undefined || !node.value.includes("![[")) return;
+      const parts: PhrasingContent[] = [];
+      let last = 0;
+      for (const m of node.value.matchAll(EMBED)) {
+        const [whole, name, option] = m;
+        const rel = assets.get(name.trim());
+        if (!rel) continue; // 画像以外の埋め込み(ノートの埋め込みなど)は文字のまま
+        if (m.index > last) parts.push({ type: "text", value: node.value.slice(last, m.index) });
+        const width = option && /^\d+$/.test(option) ? option : undefined;
+        parts.push({
+          type: "image",
+          url: `${BASE_PATH}/notes-assets/${rel.split("/").map(encodeURIComponent).join("/")}`,
+          alt: (!width && option) || name.replace(/\.drawio\.svg$|\.\w+$/, ""),
+          data: width ? { hProperties: { width } } : undefined,
+        });
+        last = m.index + whole.length;
+      }
+      if (parts.length === 0) return;
+      if (last < node.value.length) parts.push({ type: "text", value: node.value.slice(last) });
+      parent.children.splice(index, 1, ...parts);
+      return [SKIP, index + parts.length];
+    });
+  };
+}
 
 /**
  * Obsidian の wikilink を普通のリンクに変換する remark プラグイン。
@@ -150,6 +187,34 @@ function remarkCallout() {
   };
 }
 
+/**
+ * ```mermaid のコードブロックを、図として描画する枠(div[data-mermaid])に変える。
+ * 実際の描画はブラウザで行う(components/mermaid-diagram.tsx)。Obsidian でも同じ書き方で図になる。
+ *
+ * テキストの図(```)のすぐ後に ```mermaid があれば、2つを1組(div[data-diagram-tabs])にまとめ、
+ * サイトでは「図 / テキスト」のタブで切り替えて見せる(components/diagram-tabs.tsx)。
+ * Obsidian ではタブにならず、2つが上下に並ぶ。
+ */
+function remarkMermaid() {
+  return (tree: MdastRoot) => {
+    visit(tree, "code", (node, index, parent) => {
+      if (node.lang !== "mermaid" || !parent || index === undefined) return;
+      // remark-rehype は知らない種類のノードを、子を持つ div として出力する(data.hName・hProperties も効く)。
+      // code のままだと <pre> で包まれてしまうので、別の種類のノードに置き換える
+      const block = (type: string, dataProps: Record<string, string>, children: unknown[]) =>
+        ({ type, data: { hName: "div", hProperties: dataProps }, children }) as unknown as MdastRoot["children"][number];
+      const diagram = block("mermaid", { dataMermaid: node.value }, []);
+      const prev = index > 0 ? parent.children[index - 1] : undefined;
+      if (prev?.type === "code" && prev.lang !== "mermaid") {
+        parent.children.splice(index - 1, 2, block("diagramTabs", { dataDiagramTabs: "" }, [prev, diagram]));
+        return [SKIP, index];
+      }
+      parent.children[index] = diagram;
+      return [SKIP, index + 1];
+    });
+  };
+}
+
 /** shiki が知らない言語(gitignore など)は書式なしとして扱う。知らない言語があるとビルドが止まるため */
 function remarkCodeLang() {
   return (tree: MdastRoot) => {
@@ -178,10 +243,12 @@ function rehypeTableWrap() {
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
+  .use(remarkEmbed)
   .use(remarkWikilink)
   .use(remarkCallout)
   // Obsidian と同じく、1回の改行もそのまま改行として表示する(callout のタイトル分けより後に置く)
   .use(remarkBreaks)
+  .use(remarkMermaid)
   .use(remarkCodeLang)
   .use(remarkRehype)
   .use(rehypeTableWrap)

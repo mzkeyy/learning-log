@@ -195,7 +195,8 @@ def main() -> int:
         and not any(p.startswith(".") for p in src.relative_to(SOURCE).parts)
         and not is_excluded(src.relative_to(SOURCE))
     ]
-    notes = {src.stem for src in files if src.suffix == ".md"}
+    # リンク先として存在するもの: ノートは拡張子なしの名前、画像などは ![[図.svg]] で埋め込むのでファイル名
+    notes = {src.stem for src in files if src.suffix == ".md"} | {src.name for src in files if src.suffix != ".md"}
 
     count = 0
     problems = []

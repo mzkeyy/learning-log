@@ -1,6 +1,6 @@
 ---
 title: "SAA 04 コンピューティング(EC2・Auto Scaling・Lambda・コンテナ)"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 ← [[SAA_03_ネットワーク(VPC・ELB・Route 53・CloudFront)]] / 次 → [[SAA_05_ストレージ(S3・EBS・EFS・FSx)]]
@@ -13,6 +13,16 @@ modified: 2026-10-18
    └─ EC2 の上で細かく調整したい ───────────────▶ ECS / EKS on EC2
 短い処理・イベントで動かす(最大15分)───────────▶ Lambda
 コードを置くだけで Web アプリを動かしたい ───────▶ Elastic Beanstalk / App Runner
+```
+
+```mermaid
+flowchart LR
+  q{"何を動かす?"} -->|サーバーを自分で管理<br/>OS をいじりたい| ec2["EC2"]
+  q -->|コンテナ| ct{"サーバー管理は?"}
+  ct -->|したくない| fg["ECS / EKS on Fargate"]
+  ct -->|EC2 の上で細かく調整| ce["ECS / EKS on EC2"]
+  q -->|短い処理・イベントで動かす<br/>最大15分| lam["Lambda"]
+  q -->|コードを置くだけで<br/>Web アプリを動かす| eb["Elastic Beanstalk / App Runner"]
 ```
 
 ## EC2
@@ -60,6 +70,22 @@ modified: 2026-10-18
             └─ AZ-c: EC2 EC2 (負荷が上がると増える)
          起動テンプレート(AMI・インスタンスタイプ・SG)から作る
 ```
+
+```mermaid
+flowchart LR
+  alb["ALB"] --> e1 & e2 & e3 & e4
+  subgraph asg["Auto Scaling グループ(最小2 / 希望2 / 最大10)"]
+    subgraph a["AZ-a"]
+      e1["EC2"]
+      e2["EC2"]
+    end
+    subgraph c["AZ-c"]
+      e3["EC2"]
+      e4["EC2"]
+    end
+  end
+  lt["起動テンプレート<br/>AMI・インスタンスタイプ・SG"] -. ここから作る .-> asg
+```
 | スケーリングポリシー | 動き | 使いどころ |
 | --- | --- | --- |
 | **ターゲット追跡** | 「CPU 50% を保つ」ように自動調整 | **まずこれ**。一番シンプル |
@@ -89,6 +115,13 @@ modified: 2026-10-18
 ```
 ユーザー ─▶ API Gateway ─▶ Lambda ─▶ DynamoDB
                                 └──▶ S3
+```
+
+```mermaid
+flowchart LR
+  u(["ユーザー"]) --> apigw["API Gateway"] --> lam["Lambda"]
+  lam --> ddb[("DynamoDB")]
+  lam --> s3[("S3")]
 ```
 - **API Gateway**:REST / HTTP / WebSocket API。スロットリング、キャッシュ、API キー、Cognito 認証
 - **Step Functions**:複数の Lambda を順番・分岐・リトライ付きで動かすワークフロー

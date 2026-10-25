@@ -201,3 +201,19 @@
 .prose details.callout > summary {
   @apply cursor-pointer select-none;
 }
+/* Mermaid の図: 枠で囲み、横に長い図は図だけ横スクロール */
+.mermaid-diagram {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: 1rem;
+  background: var(--card);
+  /* mermaid は body の行の高さ(1.5)で文字の高さを測る。本文(prose)の 1.75 を引き継ぐと下が切れる */
+  line-height: 1.5;
+}
+.mermaid-diagram svg {
+  display: block;
+  margin-inline: auto;
+  max-width: 100%;
+  height: auto;
+}

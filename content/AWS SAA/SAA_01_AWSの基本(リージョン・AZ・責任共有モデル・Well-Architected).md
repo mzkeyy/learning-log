@@ -16,6 +16,16 @@ modified: 2026-10-25
 エッジロケーション(世界 数百か所)    ← CloudFront・Route 53・Global Accelerator が使う
 ```
 
+```mermaid
+flowchart TB
+  subgraph region["リージョン(例: 東京 ap-northeast-1)"]
+    direction LR
+    a["AZ a<br/>1つ以上のデータセンター"] <-->|低遅延の専用線| c["AZ c"]
+    c <-->|低遅延の専用線| d["AZ d"]
+  end
+  edge["エッジロケーション(世界 数百か所)<br/>CloudFront・Route 53・Global Accelerator"]
+```
+
 | 単位 | 障害への強さ | 試験での使いどころ |
 | --- | --- | --- |
 | **複数 AZ(マルチAZ)** | データセンター1つが落ちても動く | 「高可用性」と言われたらまずこれ |
@@ -44,6 +54,19 @@ modified: 2026-10-25
 ──────────────────────────────────────
 AWS の責任   「クラウド"そのもの"のセキュリティ」
   データセンター、ハードウェア、ハイパーバイザー、マネージドサービスの基盤
+```
+
+```mermaid
+flowchart TB
+  subgraph customer["お客様の責任: クラウドの「中」のセキュリティ"]
+    direction LR
+    c1["データ"] ~~~ c2["IAM の設定"] ~~~ c3["OS のパッチ<br/>(EC2 の場合)"] ~~~ c4["セキュリティグループ<br/>暗号化の設定"]
+  end
+  subgraph aws["AWS の責任: クラウド「そのもの」のセキュリティ"]
+    direction LR
+    a1["データセンター"] ~~~ a2["ハードウェア"] ~~~ a3["ハイパーバイザー"] ~~~ a4["マネージドサービスの基盤"]
+  end
+  customer --- aws
 ```
 - **EC2(IaaS)** は OS から上がお客様の責任 → パッチ当ても自分
 - **RDS・Lambda・S3(マネージド)** になるほど AWS の担当が増える → 「運用負荷を下げたい」なら **マネージドサービスを選ぶ** のが試験の定石

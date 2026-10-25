@@ -70,6 +70,32 @@ Route 53(DNS) ─▶ CloudFront(CDN) ─▶ S3(静的ファイル)
 └─────────────────────────────────────────────┘
 監視: CloudWatch / 監査: CloudTrail / 設定チェック: Config / 権限: IAM ロール
 ```
+
+```mermaid
+flowchart TB
+  user(["ユーザー"]) --> r53["Route 53<br/>DNS"]
+  r53 --> cf["CloudFront<br/>CDN・WAF / Shield"]
+  cf -->|静的ファイル| s3[("S3")]
+  r53 --> alb
+  subgraph vpc["VPC"]
+    subgraph pub["パブリックサブネット(AZ-a / AZ-c)"]
+      alb["ALB"]
+      nat["NAT ゲートウェイ"]
+    end
+    subgraph priv["プライベートサブネット(AZ-a / AZ-c)"]
+      app["EC2(Auto Scaling)<br/>/ ECS on Fargate"]
+      worker["ワーカー<br/>非同期処理"]
+      cache[("ElastiCache<br/>キャッシュ・セッション")]
+      db[("RDS マルチAZ<br/>/ Aurora")]
+    end
+  end
+  alb --> app
+  app --> cache
+  app --> db
+  app --> sqs[["SQS"]] --> worker
+  app -. 外向きの通信 .-> nat
+```
+
 監視・監査の3つの違いは [[SAA_補足_監視と監査(CloudTrail・CloudWatch・Config)]] にまとめている。
 この図の**どこを、何に置き換えると、どの条件が良くなるか**を問うのが SAA の問題のほとんど。
 

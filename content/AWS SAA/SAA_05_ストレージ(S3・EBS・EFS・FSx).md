@@ -1,6 +1,6 @@
 ---
 title: "SAA 05 ストレージ(S3・EBS・EFS・FSx)"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 ← [[SAA_04_コンピューティング(EC2・Auto Scaling・Lambda・コンテナ)]] / 次 → [[SAA_06_データベース(RDS・Aurora・DynamoDB・ElastiCache)]]
@@ -30,6 +30,13 @@ modified: 2026-10-18
 | **S3 Glacier Deep Archive** | 12〜48時間 | 180日 | **一番安い**。法令で7年保存など |
 
 → 「30日後にほぼ見なくなり、1年後に削除」= **ライフサイクルルール**で Standard → Standard-IA(30日)→ Glacier → 削除。
+
+```mermaid
+flowchart LR
+  std["S3 Standard"] -->|30日後| ia["S3 Standard-IA"]
+  ia -->|さらに後| gl["S3 Glacier"]
+  gl -->|1年後| del(["削除"])
+```
 
 ### 機能
 | 機能 | 何ができるか | キーワード |

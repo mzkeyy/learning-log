@@ -99,6 +99,9 @@ class UnlinkMissingTest(unittest.TestCase):
     def test_表の中の存在しないノートは名前にエスケープを残さない(self):
         self.assertEqual(sync.unlink_missing("| [[無い\\|]] |", set()), "| 無い |")
 
+    def test_埋め込んだ画像は残す(self):
+        self.assertEqual(sync.unlink_missing("![[構成図.drawio.svg]]", {"構成図.drawio.svg"}), "![[構成図.drawio.svg]]")
+
     def test_コードの中は触らない(self):
         text = "`[[無い]]`\n```\n[[無い]]\n```"
         self.assertEqual(sync.unlink_missing(text, set()), text)

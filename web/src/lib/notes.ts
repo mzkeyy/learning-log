@@ -116,3 +116,22 @@ export function getBacklinks(note: Note): Note[] {
   }
   return backlinkCache.get(note.name) ?? [];
 }
+
+/** ノートに埋め込む画像(![[名前.svg]])の拡張子 */
+export const ASSET_EXTENSIONS = [".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+let assetCache: Map<string, string> | undefined;
+
+/**
+ * 画像のファイル名 → content/ からの相対パス。Obsidian と同じく、埋め込みはファイル名だけで探す。
+ * 画像は scripts/copy-assets.mjs が public/notes-assets/ にコピーする
+ */
+export function getAssetMap(): Map<string, string> {
+  assetCache ??= new Map(
+    fs
+      .readdirSync(CONTENT_DIR, { recursive: true, encoding: "utf-8" })
+      .filter((rel) => ASSET_EXTENSIONS.some((ext) => rel.toLowerCase().endsWith(ext)))
+      .map((rel) => [path.basename(rel), rel.split(path.sep).join("/")]),
+  );
+  return assetCache;
+}

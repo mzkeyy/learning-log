@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scripts/copy-assets.mjs が content/ からコピーする画像
+/public/notes-assets/

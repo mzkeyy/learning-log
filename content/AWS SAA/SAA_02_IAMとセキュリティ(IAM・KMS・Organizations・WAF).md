@@ -1,6 +1,6 @@
 ---
 title: "SAA 02 IAMとセキュリティ(IAM・KMS・Organizations・WAF)"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 ← [[SAA_01_AWSの基本(リージョン・AZ・責任共有モデル・Well-Architected)]] / 次 → [[SAA_03_ネットワーク(VPC・ELB・Route 53・CloudFront)]]
@@ -26,6 +26,15 @@ modified: 2026-10-18
 1. 明示的な Deny がある?  → あれば 拒否(何があっても最優先)
 2. 明示的な Allow がある? → あれば 許可
 3. どちらもない          → 拒否(暗黙の Deny)
+```
+
+```mermaid
+flowchart TD
+  req(["リクエスト"]) --> deny{"明示的な Deny<br/>がある?"}
+  deny -->|ある| x1["拒否<br/>何があっても最優先"]
+  deny -->|ない| allow{"明示的な Allow<br/>がある?"}
+  allow -->|ある| ok["許可"]
+  allow -->|ない| x2["拒否<br/>暗黙の Deny"]
 ```
 ```json
 {

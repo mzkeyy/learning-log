@@ -1,6 +1,6 @@
 ---
 title: "SAA 07 疎結合と分析(SQS・SNS・EventBridge・Kinesis・Athena)"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 ← [[SAA_06_データベース(RDS・Aurora・DynamoDB・ElastiCache)]] / 次 → [[SAA_08_高可用性・DR・移行(バックアップ・DR戦略・監視)]]
@@ -12,6 +12,16 @@ modified: 2026-10-18
 
 【疎結合】 Web サーバー ──▶ [SQS キュー] ──▶ 処理サーバー(Auto Scaling)
            Web は投げるだけ。処理側が落ちてもメッセージはキューに残る
+```
+
+```mermaid
+flowchart LR
+  subgraph tight["密結合"]
+    w1["Web サーバー"] -->|直接呼ぶ| p1["処理サーバー"]
+  end
+  subgraph loose["疎結合"]
+    w2["Web サーバー"] --> q[["SQS キュー"]] --> p2["処理サーバー<br/>Auto Scaling"]
+  end
 ```
 → 「急なアクセス増でも注文を失わない」「処理を非同期にしたい」= **間に SQS を挟む**。
 
@@ -42,6 +52,14 @@ modified: 2026-10-18
             ┌─▶ SQS(在庫を減らす) ─▶ 処理A
 注文 ─▶ SNS ─┼─▶ SQS(メール送信)   ─▶ 処理B
             └─▶ SQS(分析)         ─▶ 処理C
+```
+
+```mermaid
+flowchart LR
+  o(["注文"]) --> sns["SNS"]
+  sns --> q1[["SQS: 在庫を減らす"]] --> a["処理A"]
+  sns --> q2[["SQS: メール送信"]] --> b["処理B"]
+  sns --> q3[["SQS: 分析"]] --> c["処理C"]
 ```
 - **メッセージフィルタリング**:宛先ごとに受け取る条件を変える
 
