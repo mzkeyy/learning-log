@@ -1,6 +1,6 @@
 ---
 title: "12 MCP(Claude Code での使い方)"
-modified: 2026-09-28
+modified: 2026-10-25
 ---
 
 MCP(Model Context Protocol)の一般的な説明は [[MCP]] を参照。ここでは Claude Code での接続・管理方法をまとめる。
@@ -45,7 +45,8 @@ claude mcp list            # 一覧
 claude mcp get notion      # 詳細
 claude mcp remove notion   # 削除
 ```
-- セッション内: `/mcp` で状態確認・再接続・有効/無効切替(`/mcp disable <名前>`)
+- セッション内: `/mcp` で状態確認・再接続・有効/無効切替(`/mcp disable <名前>`、全部つなぎ直す `/mcp reconnect all`)
+- シェルから認証: `claude mcp login <名前>` / `claude mcp logout <名前>`
 - `/context all` で各 MCP ツールのトークン消費を確認
 
 ## スコープ(保存場所)
@@ -72,7 +73,9 @@ claude mcp add --transport http hubspot --scope user https://mcp.hubspot.com/ant
 ```
 
 ## コンテキストへの影響
-- 既定で **Tool search** が有効: 起動時はツール名だけ読み込み、使う時に詳細スキーマを読む → つないでいるだけならほぼコストなし
+- 既定で **Tool search** が有効: 起動時はツール名だけ読み込み、使う時に詳細スキーマを読む → つないでいるだけならほぼコストなし(v2.1.304 からカスタム `ANTHROPIC_BASE_URL` 経由でも既定ON)
+- サーバー設定の `alwaysLoad: false` で、そのサーバーのツールを全部 tool search の後ろに回せる
+- ツール説明とサーバー指示は 4,096 文字までで切られる(`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH` で変更)
 - それでも使わないサーバーは切っておくと良い
 
 ## その他の機能
@@ -85,6 +88,8 @@ claude mcp add --transport http hubspot --scope user https://mcp.hubspot.com/ant
 ## セキュリティ
 - 信頼できるサーバーだけを使う。Anthropic は第三者サーバーの安全性を保証しない
 - 外部コンテンツを取得するサーバーはプロンプトインジェクションの経路になりうる
+- 権限ルールで MCP を許可する時は `mcp__<サーバー名>__*` とサーバーの正式名で書く → [[05_権限とセキュリティ]]
+- 補足: 2026年10月時点、Claude Code は MCP プロトコル版 `2026-07-28` で接続するのが既定(古いサーバーで問題があれば `MCP_PROTOCOL_NEGOTIATION=legacy`)
 
 ## 関連
 - [[MCP]] … MCP 自体の説明

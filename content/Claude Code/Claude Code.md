@@ -1,14 +1,22 @@
 ---
 title: "Claude Code"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 Anthropic の**エージェント型コーディングツール**。ターミナル・IDE・デスクトップアプリ・Web で、コードを読み・編集し・コマンドを実行し・検証するところまで自分で進める。
 
 ## このノート群について
 
-Anthropic の公式ドキュメント(https://code.claude.com/docs 全約200ページ)を読み、初学者向けに日本語で整理したノート群の入口。
-情報は **2026年9月時点(Claude Code v2.1.28x 前後)**。機能の追加・名称変更が非常に速いので、迷ったら `/release-notes` や公式の What's new を確認する。
+Anthropic の公式ドキュメント(https://code.claude.com/docs 全約230ページ)を読み、初学者向けに日本語で整理したノート群の入口。
+情報は **2026年10月下旬時点(Claude Code v2.1.310 / 2026-10-23 リリース)**。機能の追加・名称変更が非常に速いので、迷ったら `/release-notes` や公式の Changelog・What's new を確認する。
+
+### 2026年9月下旬〜10月の主な変更(このノート群に反映済み)
+- **新モデル**: Opus 5.5(9/22、全プランの既定)、Sonnet 5.5(9/28)、Haiku 5.5(10/7)。どれも 1M コンテキスト → [[17_設定とモデル・コスト]]
+- **Auto モードが既定**: 権限モードを設定していなければ、ターミナルと VS Code は Auto で始まる(v2.1.284〜) → [[05_権限とセキュリティ]]
+- **Mods(モッド)**: プラグインに JavaScript を入れて、Claude Code の画面や動作そのものを変えられるようになった(v2.1.287〜) → [[13_プラグイン]]
+- **Routines → Scheduled tasks に改名**(クラウドの定期実行。`/schedule`、別名 `/routines`) → [[15_自動化(headless・goal・loop・routines・CI)]]
+- **Claude Tag**: Slack のチャンネルで `@Claude` に仕事を頼める(Team/Enterprise、公開β) → [[16_利用環境(Desktop・IDE・Web・モバイル・ブラウザ)]]
+- **アイドル時の自動コンパクション**、claude.ai のスキル・プラグインがターミナルにも同期、`/auto-mode-setup` など
 
 ## 読む順番(おすすめ学習ロードマップ)
 
@@ -47,14 +55,14 @@ Anthropic の公式ドキュメント(https://code.claude.com/docs 全約200ペ�
 | Getting started | Overview / Quickstart / Changelog | [[01_概要とインストール]] |
 | Core concepts | How Claude Code works / Extend Claude Code / .claude directory / Context window / Prompt caching | [[02_仕組み(エージェントループ・ツール・コンテキスト)]] [[08_拡張機能の全体像]] |
 | Use Claude Code | Memory / Sessions / Common workflows / Prompt library / Best practices | [[04_CLAUDE.mdとメモリ]] [[06_セッション管理とチェックポイント]] [[07_ベストプラクティス]] |
-| Platforms and integrations | Remote Control / Projects / Mobile / Chrome / Computer use / VS Code / JetBrains / Slack / Cloud / Desktop | [[16_利用環境(Desktop・IDE・Web・モバイル・ブラウザ)]] |
-| Code review & CI/CD | Security guidance / Claude Security / Code Review / GitHub Actions / GitLab | [[15_自動化(headless・goal・loop・routines・CI)]] |
+| Platforms and integrations | Remote Control / Projects / Mobile / Chrome / Computer use / VS Code / JetBrains / Slack / Claude Tag / Cloud / Scheduled tasks / Desktop(Linux β・WSL・iOS シミュレーター) | [[16_利用環境(Desktop・IDE・Web・モバイル・ブラウザ)]] |
+| Code review & CI/CD | /code-review / ultrareview / Code Review / Security guidance / Claude Security / GitHub Actions / GitLab | [[15_自動化(headless・goal・loop・routines・CI)]] |
 | Agents and parallel work | Subagents / Agent view / Agent teams / Cross-session messaging / Workflows / Worktrees | [[10_サブエージェント]] [[14_並列作業(Worktree・Agent View・Workflows)]] |
 | MCP / Skills / Artifacts | MCP / Skills / Artifacts | [[12_MCP(Claude Codeでの使い方)]] [[09_Skills]] [[16_利用環境(Desktop・IDE・Web・モバイル・ブラウザ)]] |
 | Automation | Hooks / Channels / Scheduled tasks / Goal / Headless / Deep links | [[11_Hooks]] [[15_自動化(headless・goal・loop・routines・CI)]] |
-| Plugins | 導入・作成・マーケットプレイス | [[13_プラグイン]] |
-| Administration | 組織導入 / 認証 / Bedrock・Vertex等 / ゲートウェイ / 監視・コスト / セキュリティ | [[18_管理者向け・Agent SDK・その他]] [[17_設定とモデル・コスト]] |
-| Configuration | Settings / Permissions / Sandboxing / Model / Output styles / Interface | [[17_設定とモデル・コスト]] [[05_権限とセキュリティ]] |
+| Plugins | 導入・作成・マーケットプレイス・評価(eval)・**Mods** | [[13_プラグイン]] |
+| Administration | 組織導入 / 認証 / Auto モード設定 / Bedrock・Vertex等 / Claude apps gateway・LLM ゲートウェイ / 監視・コスト / セキュリティ / HIPAA | [[18_管理者向け・Agent SDK・その他]] [[17_設定とモデル・コスト]] |
+| Configuration | Settings / Permissions / Sandboxing / Cloud・セルフホスト環境 / Model / Fast mode / Advisor / Output styles / Interface | [[17_設定とモデル・コスト]] [[05_権限とセキュリティ]] |
 | Reference | CLI / Commands / Env vars / Tools / Interactive mode / Checkpointing / Hooks | [[03_基本操作(コマンド・ショートカット)]] ほか |
 | Agent SDK | Python / TypeScript でエージェントを作る | [[18_管理者向け・Agent SDK・その他]] |
 
@@ -62,7 +70,7 @@ Anthropic の公式ドキュメント(https://code.claude.com/docs 全約200ペ�
 - Claude Code は「**コードを読んで・編集して・コマンドを実行して・確認する**」を自分でぐるぐる回すAI(エージェント)
 - 一番大事な資源は **コンテキスト(AIの作業メモリ)**。いっぱいになると性能が落ちる
 - 使いこなしの核は **検証手段を渡す / 計画してから実装 / CLAUDE.md を育てる / 余計な話は `/clear`**
-- 繰り返す作業は Skills、必ずやらせたいことは Hooks、外部サービスは MCP、重い調査はサブエージェント
+- 繰り返す作業は Skills、必ずやらせたいことは Hooks、外部サービスは MCP、重い調査はサブエージェント、画面や動作を作り変えたいなら Mods
 
 ## 関連
 - [[Codex]] … OpenAI の同種ツール

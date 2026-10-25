@@ -1,6 +1,6 @@
 ---
 title: "11 Hooks(フック)"
-modified: 2026-09-28
+modified: 2026-10-25
 ---
 
 Claude Code のライフサイクルの決まったタイミングで**自動実行される処理**(主にシェルコマンド)。
@@ -65,7 +65,7 @@ exit 0                                                 # 0 = 異議なし(通常
 | イベント | タイミング |
 | --- | --- |
 | `SessionStart` / `SessionEnd` | セッション開始・再開 / 終了 |
-| `UserPromptSubmit` | プロンプト送信時(Claude が処理する前) |
+| `UserPromptSubmit` | プロンプト送信時(Claude が処理する前)。v2.1.299 からスキルやカスタムコマンドが展開される**前**に動く(ブロックすると埋め込みのシェルコマンドも止まる) |
 | `PreToolUse` | ツール実行前(**ブロック可能**) |
 | `PermissionRequest` / `PermissionDenied` | 権限確認が必要な時 / Auto モードで拒否された時 |
 | `PostToolUse` / `PostToolUseFailure` | ツール成功後 / 失敗後 |
@@ -83,7 +83,10 @@ exit 0                                                 # 0 = 異議なし(通常
 - `http` … URL にイベントを POST
 - `mcp_tool` … MCP サーバーのツールを呼ぶ
 - `prompt` … LLM に1回判定させる(判断が必要な条件)
-- `agent` … ツールを使える多段の検証(実験的)
+- `agent` … ツールを使える多段の検証(実験的)。※ `PermissionRequest` では動かない(v2.1.280〜。許可/拒否を返せないため)
+- 同じイベントの `prompt` / `agent` Hook は同時に最大12個まで実行
+
+> Mod の中の「hook」(JavaScript の関数)とは別物。公式ドキュメントでは区別のため、こちらを **settings hook** と呼ぶ → [[13_プラグイン]]
 
 ## 入出力の仕組み
 - **入力**: stdin に JSON(`session_id`, `cwd`, `hook_event_name`, `tool_name`, `tool_input` など)
@@ -99,6 +102,8 @@ exit 0                                                 # 0 = 異議なし(通常
   ```
   `allow`(確認をスキップ。ただし deny ルールは有効) / `deny` / `ask`
 - 同じイベントに複数 Hook → 並列実行、最も厳しい判断(deny > defer > ask > allow)が採用される
+- **失敗したらブロック**: `command` / `http` Hook に `"onFailure": "block"` を付けると、起動失敗・タイムアウト・異常終了の時も操作を止める(ガードレール用途で「Hook が壊れていたら素通り」を防ぐ。v2.1.295〜)
+- PreToolUse などで返す `updatedInput` は Claude 自身の入力と同じように検証され、知らないキーは捨てられる
 
 ## matcher(絞り込み)
 - ツール名で絞る: `"Edit|Write"`、`"Bash"`、`"mcp__github__.*"`

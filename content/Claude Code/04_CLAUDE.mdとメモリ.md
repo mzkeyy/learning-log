@@ -1,6 +1,6 @@
 ---
 title: "04 CLAUDE.md とメモリ"
-modified: 2026-09-28
+modified: 2026-10-25
 ---
 
 セッションは毎回まっさらなコンテキストで始まる。セッションをまたいで知識を持ち越す仕組みは2つ。
@@ -63,7 +63,7 @@ modified: 2026-09-28
   - git workflow @docs/git-instructions.md
   ```
   ※ 取り込んだファイルも起動時に全部読まれる = 節約にはならない
-- `/doctor prompt-audit` … CLAUDE.md や Skills の古い・矛盾した指示を監査
+- `/doctor prompt-audit` … CLAUDE.md・Skills・サブエージェント・コマンドに「古いモデル向けの書き方」(過剰な強調など)が残っていないか監査(v2.1.283〜)
 - `/doctor` … コードから推測できる内容を削る提案
 - `/context` の「Memory files」で読み込まれたか確認
 
@@ -91,6 +91,7 @@ paths:
 ### AGENTS.md との関係
 - AGENTS.md は他のAIツール([[Codex]] など)と共通の指示ファイル
 - **CLAUDE.md が無ければ AGENTS.md を自動で読む**(v2.1.277以降)。CLAUDE.md があれば CLAUDE.md だけ
+- この読み込みは組み込みの Mod `cc-plugin-agents-md` が担当している(`/plugin` の Installed → Built-in で確認できる)
 - 両方読ませたい → `/config` の Project instructions を `claude-md-and-agents-md` に
 - 1つのファイルを共有するおすすめ構成:
   ```markdown

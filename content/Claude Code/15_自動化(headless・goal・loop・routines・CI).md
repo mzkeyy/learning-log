@@ -1,6 +1,6 @@
 ---
 title: "15 自動化(放置で動かす・定期実行・CI 連携)"
-modified: 2026-09-28
+modified: 2026-10-25
 ---
 
 ## 非対話モード(headless / `claude -p`)
@@ -14,7 +14,9 @@ cat error.log | claude -p "原因は?"                            # パイプで
 claude -c -p "続けて"                                          # 直前の会話を継続
 ```
 - `--permission-mode dontAsk` + `--allowedTools` で「許可したものだけ実行、他は拒否」= CI 向け
-- `--bare` で CLAUDE.md や Hooks などの自動読込を省いて高速・再現性重視
+- `--bare` で CLAUDE.md や Hooks などの自動読込を省いて高速・再現性重視(MCP はコマンドラインで指定したものだけ、system reminder やバックグラウンド処理もなし)
+- 権限モードを指定しない場合、サードパーティのプロバイダやテレメトリOFFでは `default` で始まる。CI では `--permission-mode` を明示するのが確実
+- バックグラウンドのコマンドは、`-p`・SDK・CI・クラウドなど無人実行の時だけ時間制限がかかる(既定30分、最大2時間)
 - `--append-system-prompt` でシステムプロンプトに追記
 - `claude setup-token` でサブスク用の長期トークンを発行(CI 用)
 - ファンアウト: `for file in $(cat files.txt); do claude -p "Migrate $file ..." --allowedTools "Edit,Bash(git commit *)"; done`
@@ -36,23 +38,34 @@ claude -c -p "続けて"                                          # 直前の会
 /loop 20m /review-pr 1234               # スキルを繰り返す
 /loop                                   # 組み込みのメンテナンス or loop.md
 ```
+- 別名 `/proactive`
 - 一回だけのリマインダーも設定可能(「3時に〜を確認して」)
 - セッション限定(再開時は復元される。7日で期限切れ)
 
 ## 定期実行の3つの選択肢
-| | クラウド(Routines) | デスクトップ定期タスク | `/loop` |
+| | クラウドの Scheduled tasks(旧 Routines) | デスクトップ定期タスク | `/loop` |
 | --- | --- | --- | --- |
 | 動く場所 | クラウド | 自分のPC | 自分のPC |
 | PCの電源 | 不要 | 必要 | 必要 |
 | セッションを開いておく | 不要 | 不要 | 必要 |
 | ローカルファイル | 使えない(毎回クローン) | 使える | 使える |
 
-### Routines(ルーティン、研究プレビュー)
-- プロンプト + リポジトリ + コネクタ(MCP)をまとめた設定を、**クラウドで自動実行**
-- トリガー: **スケジュール**(毎晩・毎週・指定日時) / **API**(HTTP POST) / **GitHub イベント**(PR 作成・リリースなど)。組み合わせ可
-- 作成: claude.ai/code/routines、または CLI で `/schedule`
-- Pro / Max / Team / Enterprise
-- 注意: ローカルの `~/.claude/skills` は使えない → スキルはリポジトリにコミットか claude.ai で有効化
+### Scheduled tasks(クラウドの定期実行。旧名 Routines、研究プレビュー)
+2026年10月に **Routines から「Scheduled tasks」へ改名**。URL(`claude.ai/code/routines`)、CLI の別名 `/routines`、API のパスなどには旧名が残っている。
+- プロンプト + リポジトリ + コネクタ(MCP)をまとめた設定を、**クラウドで自動実行**(PC を閉じていても動く)
+- トリガー: **スケジュール**(毎時・毎晩・毎週・1回だけ) / **API**(`/fire` エンドポイントに HTTP POST) / **GitHub イベント**(PR・リリース・issue)。組み合わせ可
+- 作成: claude.ai/code/routines、デスクトップの Code タブ → Scheduled、または CLI で `/schedule`
+  ```text
+  /schedule daily PR review at 9am
+  /schedule tomorrow at 9am, summarize yesterday's merged PRs   # 1回だけ
+  /schedule list | update | run
+  /schedule why did my nightly review do nothing this morning?   # 実行履歴を調べる
+  ```
+- 実行は **Auto モード**で始まる。変更は `claude/` で始まるブランチに push される
+- 自分の claude.ai アカウントに属する(チームとは共有されない)。コミットや Slack 投稿は「あなた」として行われる
+- 制限: スケジュール実行は1時間100回、cron は1時間より短い間隔は不可
+- Pro / Max / Team / Enterprise(claude.ai へのログインが必要。API キーやクラウドプロバイダ経由では使えない)
+- 注意: ローカルの `~/.claude/skills` や `claude mcp add` したサーバーは使えない → スキルはリポジトリにコミット、MCP は claude.ai のコネクタか `.mcp.json` で
 
 ### デスクトップの定期タスク
 - デスクトップアプリの Routines 画面から。毎朝のコードレビュー、依存関係チェック、朝のブリーフィングなど
@@ -73,10 +86,13 @@ claude -c -p "続けて"                                          # 直前の会
 ### Code Review(Team / Enterprise、研究プレビュー)
 - GitHub PR を自動レビューし、該当行にコメント。複数の専門エージェントがコードベース全体の文脈で論理エラー・セキュリティ・回帰を探す
 - 承認/ブロックはしない(既存のレビュー運用を壊さない)。`CLAUDE.md` や `REVIEW.md` で指摘内容を調整
+- レビューの深さを **Quick / Standard(既定)/ Deep** から組織・リポジトリ単位で選べる
+- PR で `@claude review always` と書くと以後の push を毎回レビュー、`@claude review stop`(`off` `pause`)で解除
 
 ### ローカルでのレビュー
 - `/code-review [low〜max]` … 差分のバグを探す。`--fix` で適用、`--comment` で PR にコメント
 - `/code-review ultra`(`/ultrareview`)… クラウドで多数のレビュアーが検証まで行う深いレビュー(Pro/Max は無料3回、以降は追加クレジット)
+- CI やスクリプトからは `claude ultrareview <PR番号>`。v2.1.309 からワークスペーストラストが必要になり、非対話では `--trust-workspace` を付ける(`claude ultrareview 123 --trust-workspace`)
 - `/autofix-pr` … クラウドセッションが PR を見張り、CI 失敗やレビューコメントに自動で修正を push
 
 ## その他

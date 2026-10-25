@@ -1,6 +1,6 @@
 ---
 title: "14 並列作業(複数の Claude を同時に動かす)"
-modified: 2026-09-29
+modified: 2026-10-25
 ---
 
 Claude Code には「同時に複数の作業をする」方法が複数ある。違いは**自分がどれだけ関わるか**と**どこで動くか**。
@@ -37,7 +37,9 @@ claude agents
 3. `Space` でのぞき見(最新出力や質問)、その場で返信
 4. `Enter` / `→` でアタッチ(通常の会話画面に)、空欄で `←` でデタッチ
 5. 既存セッションは `/bg`(`/background`)でバックグラウンドへ移せる
-- シェルから: `claude --bg "タスク"`、`claude attach <id>`、`claude logs <id>`、`claude stop <id>`
+- シェルから: `claude --bg "タスク"`、`claude attach <id>`、`claude logs <id>`、`claude stop <id>`(v2.1.290 から `attach` / `logs` はセッション名の一部でも指定可)
+- `Ctrl+F` で名前検索、`n:<文字>` で名前フィルタ、`Alt+↑/↓` でグループ間移動
+- エージェントビューで `/model` `/effort` `/fast` を打つと、**これから作るセッション**の既定を設定できる。作業中のセッションに送った `/model` `/effort` `/rename` は即反映
 - 各セッションが個別に利用枠を消費する点に注意
 
 ## 動的ワークフロー(Dynamic workflows)
@@ -49,6 +51,7 @@ claude agents
 - `/effort ultracode` にすると、実質的なタスクごとに Claude がワークフローを計画
 - 同梱ワークフロー: `/deep-research 質問`(Web検索を広げて出典を相互確認し、引用付きレポート)
 - `/workflows` で進捗確認・一時停止・再開・保存(保存するとコマンドとして再利用可能)
+- 全ワークフローのエージェントを1つのモデルに固定: `CLAUDE_CODE_WORKFLOW_SUBAGENT_MODEL`
 
 ## /batch(大規模変更の分割)
 ```text
