@@ -22,7 +22,7 @@ RULES = REPO / "private/publish-rules.json"
 
 # 例として書いてよいメールアドレスのドメイン
 SAFE_EMAIL = re.compile(
-    r"@(?:example\.(?:com|org|net|jp)|(?:users\.)?noreply\.github\.com|github\.com)$"
+    r"@(?:example\.(?:com|org|net|jp)|(?:users\.)?noreply\.github\.com|github\.com|anthropic\.com)$"
 )
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 # 例として書いてよいホームフォルダ名
