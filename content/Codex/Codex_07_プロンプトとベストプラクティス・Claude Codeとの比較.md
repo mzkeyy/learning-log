@@ -1,6 +1,6 @@
 ---
 title: "Codex 07 プロンプトとベストプラクティス・Claude Code との比較"
-modified: 2026-09-29
+modified: 2026-10-25
 ---
 
 ## 良いプロンプトの4要素(公式)
@@ -54,7 +54,7 @@ modified: 2026-09-29
 | Skills の場所 | `.agents/skills/` | `.claude/skills/` |
 | サブエージェント | `.codex/agents/*.toml` | `.claude/agents/*.md` |
 | 長時間作業 | `/goal`、Ultra | `/goal`、動的ワークフロー、`/loop` |
-| クラウド | Codex cloud | Claude Code on the web / routines |
+| クラウド | Codex cloud | クラウドセッション(claude.ai/code)/ Scheduled tasks(旧 routines) |
 | 移行 | `/import` で Claude Code・Cursor の設定を取り込み | `/import codex` で Codex の設定を取り込み |
 
 ### 併用のコツ

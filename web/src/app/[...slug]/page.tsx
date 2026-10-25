@@ -14,7 +14,17 @@ export const dynamicParams = false;
 
 /** ビルド時に「どのページを作るか」を Next.js に教える。ノート1つにつき1ページ */
 export function generateStaticParams() {
-  return getAllNotes().map((note) => ({ slug: note.slug }));
+  const params = getAllNotes().map((note) => ({ slug: note.slug }));
+  // 開発サーバー(npm run dev)は、URL の日本語や記号を %E8%AA%8D… のようにエンコードしたまま
+  // この一覧と照らし合わせるため、元の文字のままだと「一覧にないページ」としてエラーになる。
+  // 開発時だけエンコードした形も加える(本番ビルドで加えると、同じページが2つずつ作られてしまう)。
+  if (process.env.NODE_ENV === "development") {
+    return [
+      ...params,
+      ...params.map(({ slug }) => ({ slug: slug.map((s) => encodeURIComponent(s)) })),
+    ];
+  }
+  return params;
 }
 
 /** URL の日本語や記号はエンコードされて届くことがあるので、元の文字に戻してから探す */
