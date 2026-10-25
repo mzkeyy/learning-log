@@ -13,6 +13,8 @@ Obsidian の「学習」フォルダを元に、Next.js(静的出力)と shadcn/
 | `scripts/sync.py` | Obsidian から公開用ノートをコピーし、除外ノートへの参照などを取り除く |
 | `scripts/check.py` | 公開してはいけない文字列(非公開の語句・メールアドレス・電話番号・ホームフォルダのパス・API キーなど)を探す |
 | `private/publish-rules.json` | 公開しないノート・語句の一覧。**git に入れない**(`.gitignore`)。形は `scripts/publish-rules.example.json` |
+| `scripts/tests/` | `sync.py` と `check.py` のテスト(例のルールで動くので CI でも走る) |
+| `scripts/check_links.py` | ビルド結果(`web/out`)のサイト内リンクが全部実在するか調べる |
 | `.githooks/pre-push` | push 前に、push されるコミットの追加行を `check.py` で調べ、見つかれば push を止める |
 | `web/` | Next.js アプリ |
 | `web/src/lib/notes.ts` | `content/` の読み込み、URL の決定、バックリンク |
@@ -42,6 +44,15 @@ git add -A && git commit -m "Update notes" && git push   # push 前に check.py 
 ```sh
 git config core.hooksPath .githooks
 ```
+
+## テスト
+
+```sh
+python3 -m unittest discover -s scripts/tests -v   # 公開ルールのテスト
+python3 scripts/check_links.py                     # リンク切れ(先に web/ で npm run build)
+```
+
+GitHub Actions でも公開前に両方を実行し、失敗したら公開しない。
 
 ## 手元で確認する
 

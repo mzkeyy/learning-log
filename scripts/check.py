@@ -12,13 +12,15 @@
 """
 
 import json
+import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-RULES = REPO / "private/publish-rules.json"
+# テストでは PUBLISH_RULES で例のルール(scripts/publish-rules.example.json)を指定する
+RULES = Path(os.environ.get("PUBLISH_RULES", REPO / "private/publish-rules.json"))
 
 # 例として書いてよいメールアドレスのドメイン
 SAFE_EMAIL = re.compile(
@@ -41,7 +43,7 @@ PATTERNS = [
 def load_rules() -> dict:
     if not RULES.is_file():
         sys.exit(
-            f"{RULES.relative_to(REPO)} がありません。"
+            f"{RULES} がありません。"
             "scripts/publish-rules.example.json を参考に作ってください(このファイルは git に入りません)"
         )
     return json.loads(RULES.read_text(encoding="utf-8"))
