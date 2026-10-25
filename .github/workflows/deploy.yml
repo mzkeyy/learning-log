@@ -20,17 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout notes
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: site
       # Quartz 本体はリポジトリに含めず、ビルド時にバージョン固定で取得する
       - name: Checkout Quartz
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: jackyzha0/quartz
           ref: v4.5.2
           path: quartz
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -47,7 +47,7 @@ jobs:
         working-directory: quartz
         run: npx quartz build
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: quartz/public
 
@@ -60,4 +60,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
