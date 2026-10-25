@@ -1,2 +1,4 @@
 .DS_Store
 __pycache__/
+# 公開しない語句のリスト(scripts/publish-rules.example.json と同じ形)
+private/

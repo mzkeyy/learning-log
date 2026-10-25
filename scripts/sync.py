@@ -3,31 +3,36 @@
 
 - EXCLUDE に挙げたノートはコピーしない
 - 除外ノートへのリンク・言及、claude.ai の Artifact リンク行は取り除く
-- 先頭の `# 見出し` はフロントマターの title に移す(Quartz がタイトルを二重に表示しないように)
-- 取り除き漏れがあればエラーで止まる
+- 先頭の `# 見出し` はフロントマターの title に移す(サイトがタイトルを二重に表示しないように)
+- 取り除き漏れや個人情報らしい文字列があればエラーで止まる(scripts/check.py)
+- 前回から追加・変更・削除されたノートを一覧で出す(公開前に目で確認する用)
 
 使い方: python3 scripts/sync.py
 """
 
 import re
 import shutil
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
+
+import check
 
 SOURCE = Path.home() / "Library/Mobile Documents/iCloud~md~obsidian/Documents/ログ/学習"
 REPO = Path(__file__).resolve().parent.parent
 CONTENT = REPO / "content"
 INDEX = REPO / "pages/index.md"
 
+# 公開しないノートや語句は private/publish-rules.json に書く(git に入れない)
+RULES = check.load_rules()
+FORBIDDEN = check.forbidden_patterns()
+
 # 公開しないフォルダ・ファイル(SOURCE からの相対パス)
-EXCLUDE = [
-    "非公開フォルダ",
-    "非公開ロードマップ.md",
-]
+EXCLUDE = RULES["exclude"]
 
 # 除外ノートへの wikilink(エイリアス付き [[名前|表示]] も含む)
-EX = r"\[\[(?:非公開フォルダ|非公開ノート_|非公開ロードマップ)[^\]]*\]\]"
+EX = r"\[\[(?:" + "|".join(map(re.escape, RULES["excluded_links"])) + r")[^\]]*\]\]"
 EX_LINK = re.compile(EX)
 # 「/ [[除外]](補足)」「[[除外]](補足) / 」のように他のリンクと並んでいる部分
 EX_AFTER_SLASH = re.compile(r"\s*/\s*" + EX + r"(?:\([^)]*\))?")
@@ -35,29 +40,18 @@ EX_BEFORE_SLASH = re.compile(EX + r"(?:\([^)]*\))?\s*/\s*")
 # 「([[除外|お金の事故]])」のような括弧書き
 EX_PAREN = re.compile(r"\(" + EX + r"\)")
 # 「[図解を開く: …](artifact)」の行と、callout 内の「> [構成図](artifact) ― 説明」の行
-ARTIFACT_LINE = re.compile(r"^(?:>\s*)?\[[^\]]*\]\(https://claude\.ai/artifact/[^)]*\).*$")
+ARTIFACT = r"https://claude\.ai/artifact/"
+ARTIFACT_LINE = re.compile(r"^(?:>\s*)?\[[^\]]*\]\(" + ARTIFACT + r"[^)]*\).*$")
 CALLOUT_HEADER = re.compile(r"^>\s*\[![^\]]+\]")
 # 除外ノートの元資料(出典 URL など)を指す行
-EX_SOURCE = re.compile(r"社内サイト\.example")
+DROP_LINE = re.compile("|".join(RULES["drop_lines"]) or r"(?!)")
 
 # 公開しない個別の記述(元の文字列 -> 置き換え後)
-REPLACEMENTS = [
-    ("。[[非公開アプリA]] でも使う", ""),
-    ("(例: [[非公開アプリB]])", ""),
-]
+REPLACEMENTS = RULES["replacements"]
 
 WIKILINK = re.compile(r"\[\[([^\]|#]+)(#[^\]|]*)?(?:\|([^\]]*))?\]\]")
 # フェンスコードブロックとインラインコード(この中の [[...]] はリンクではない)
 CODE = re.compile(r"^```.*?^```|`[^`\n]*`", re.S | re.M)
-
-# 公開後に残っていてはいけない文字列
-FORBIDDEN = [
-    re.compile(r"非公開アプリA|非公開アプリB"),
-    re.compile(r"claude\.ai/artifact"),
-    re.compile(r"社名|社内サイト\.example"),
-    re.compile(r"非公開ノート"),
-    re.compile(r"非公開ロードマップ"),
-]
 
 
 def is_excluded(rel: Path) -> bool:
@@ -115,7 +109,7 @@ def transform(text: str, modified: str) -> tuple[str, list[str]]:
                 out.pop()
             skip_blank = True
             continue
-        if EX_SOURCE.search(line):
+        if DROP_LINE.search(line):
             removed.append(line)
             continue
         new = strip_line(line)
@@ -168,6 +162,22 @@ def render_index(text: str, total: int) -> tuple[str, list[str]]:
     return text, missing
 
 
+def print_changes() -> None:
+    """前回のコミットから変わったノート。push する前にここに出たものを確認する"""
+    status = subprocess.run(
+        ["git", "status", "--porcelain", "-uall", "-z", "content/"],
+        cwd=REPO, check=True, capture_output=True, text=True, encoding="utf-8",
+    ).stdout
+    labels = {"??": "追加", "M": "変更", "D": "削除"}
+    changes = [(labels.get(e[:2].strip(), e[:2].strip()), e[3:]) for e in status.split("\0") if e]
+    if not changes:
+        print("前回から変わったノートはありません")
+        return
+    print("前回から変わったノート(公開して大丈夫か確認してください):")
+    for label, path in changes:
+        print(f"  {label}: {path}")
+
+
 def main() -> int:
     if not SOURCE.is_dir():
         print(f"元フォルダが見つかりません: {SOURCE}", file=sys.stderr)
@@ -201,18 +211,16 @@ def main() -> int:
         dest.write_text(text, encoding="utf-8")
         count += 1
         for r in removed:
-            if "claude.ai/artifact" not in r:
+            if not re.search(ARTIFACT, r):
                 print(f"[{rel}] 削除: {r}")
-        for pat in FORBIDDEN:
-            for m in pat.finditer(text):
-                lineno = text.count("\n", 0, m.start()) + 1
-                problems.append(f"{rel}:{lineno}: {m.group(0)}")
+        problems += [f"{rel}:{n}: [{kind}] {s}" for n, kind, s in check.scan(text, FORBIDDEN)]
 
     index, missing = render_index(INDEX.read_text(encoding="utf-8"), count)
     (CONTENT / "index.md").write_text(index, encoding="utf-8")
     problems += [f"pages/index.md: 見つからないトピック {name}" for name in missing]
 
     print(f"\n{count} ノートを content/ にコピーしました")
+    print_changes()
     if problems:
         print("\n公開してはいけない文字列が残っています:", file=sys.stderr)
         for p in problems:

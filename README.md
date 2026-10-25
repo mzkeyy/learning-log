@@ -11,6 +11,9 @@ Obsidian の「学習」フォルダを元に、Next.js(静的出力)と shadcn/
 | `content/` | 公開するノート(`scripts/sync.py` が生成。直接編集しない) |
 | `pages/index.md` | トップページ兼サイトの目次。`## 分野` と表の行がサイドバーとトップのカードになる(`{{total}}` と `{{n:トピック}}` は sync 時にノート数へ置き換わる) |
 | `scripts/sync.py` | Obsidian から公開用ノートをコピーし、除外ノートへの参照などを取り除く |
+| `scripts/check.py` | 公開してはいけない文字列(非公開の語句・メールアドレス・電話番号・ホームフォルダのパス・API キーなど)を探す |
+| `private/publish-rules.json` | 公開しないノート・語句の一覧。**git に入れない**(`.gitignore`)。形は `scripts/publish-rules.example.json` |
+| `.githooks/pre-push` | push 前に、push されるコミットの追加行を `check.py` で調べ、見つかれば push を止める |
 | `web/` | Next.js アプリ |
 | `web/src/lib/notes.ts` | `content/` の読み込み、URL の決定、バックリンク |
 | `web/src/lib/markdown.ts` | Markdown → HTML(wikilink・callout・改行・コードの色分け・目次) |
@@ -23,12 +26,22 @@ Obsidian の「学習」フォルダを元に、Next.js(静的出力)と shadcn/
 
 ```sh
 cd ~/Projects/learning-log
-python3 scripts/sync.py   # 削除した行が表示される。公開してはいけない文字列が残っていればエラーで止まる
-git diff --stat
-git add -A && git commit -m "Update notes" && git push
+python3 scripts/sync.py   # 削除した行と、前回から追加・変更・削除されたノートが表示される
+git diff content/         # 変更されたノートの中身を確認する
+git add -A && git commit -m "Update notes" && git push   # push 前に check.py が自動で走る
 ```
 
-公開しないノートを増やすときは `scripts/sync.py` の `EXCLUDE` に追加する。
+- `sync.py` は公開してはいけない文字列が残っていればエラーで止まる
+- 公開しないノートや語句を増やすときは `private/publish-rules.json` に追加する
+- 誤検出で止まったときだけ `git push --no-verify` で飛ばせる
+
+### 別の場所に clone したとき
+
+`private/` は git に入っていないので、`private/publish-rules.json` を作り直す(無いと sync も push もエラーで止まる)。pre-push フックも clone ごとに有効にする。
+
+```sh
+git config core.hooksPath .githooks
+```
 
 ## 手元で確認する
 

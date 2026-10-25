@@ -1,0 +1,4 @@
+#!/bin/sh
+# push されるコミットに、公開してはいけない文字列が入っていないか調べる(scripts/check.py)
+# 有効にする: git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/scripts/check.py" --pre-push
