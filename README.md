@@ -9,7 +9,7 @@ Obsidian の「学習」フォルダを元に、[Quartz](https://quartz.jzhao.xy
 | パス | 内容 |
 | --- | --- |
 | `content/` | 公開するノート(`scripts/sync.py` が生成。直接編集しない) |
-| `pages/index.md` | トップページ |
+| `pages/index.md` | トップページ(`{{total}}` と `{{n:トピック}}` は sync 時にノート数へ置き換わる) |
 | `scripts/sync.py` | Obsidian から公開用ノートをコピーし、除外ノートへの参照などを取り除く |
 | `quartz.config.ts` / `quartz.layout.ts` | Quartz の設定 |
 | `.github/workflows/deploy.yml` | push 時に Quartz を取得してビルドし、GitHub Pages に公開 |

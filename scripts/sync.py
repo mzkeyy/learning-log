@@ -142,6 +142,32 @@ def transform(text: str, modified: str) -> tuple[str, list[str]]:
     return "\n".join(out), removed
 
 
+def count_notes(topic: str) -> int | None:
+    """トピックのノート数。フォルダならその中の .md の数、単独ノートなら 1。"""
+    if (CONTENT / topic).is_dir():
+        return sum(1 for _ in (CONTENT / topic).rglob("*.md"))
+    if (CONTENT / f"{topic}.md").is_file():
+        return 1
+    return None
+
+
+def render_index(text: str, total: int) -> tuple[str, list[str]]:
+    """トップページの {{total}} と {{n:トピック,…}} をノート数に置き換える。"""
+    missing = []
+
+    def repl(m: re.Match) -> str:
+        n = 0
+        for topic in m.group(1).split(","):
+            c = count_notes(topic.strip())
+            if c is None:
+                missing.append(topic.strip())
+            n += c or 0
+        return str(n)
+
+    text = re.sub(r"\{\{n:([^}]+)\}\}", repl, text.replace("{{total}}", str(total)))
+    return text, missing
+
+
 def main() -> int:
     if not SOURCE.is_dir():
         print(f"元フォルダが見つかりません: {SOURCE}", file=sys.stderr)
@@ -182,7 +208,9 @@ def main() -> int:
                 lineno = text.count("\n", 0, m.start()) + 1
                 problems.append(f"{rel}:{lineno}: {m.group(0)}")
 
-    shutil.copy2(INDEX, CONTENT / "index.md")
+    index, missing = render_index(INDEX.read_text(encoding="utf-8"), count)
+    (CONTENT / "index.md").write_text(index, encoding="utf-8")
+    problems += [f"pages/index.md: 見つからないトピック {name}" for name in missing]
 
     print(f"\n{count} ノートを content/ にコピーしました")
     if problems:
