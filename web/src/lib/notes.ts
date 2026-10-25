@@ -6,7 +6,8 @@ import matter from "gray-matter";
 const CONTENT_DIR = path.join(process.cwd(), "..", "content");
 
 // [[名前]] / [[名前#見出し]] / [[名前|表示名]] / [[名前#見出し|表示名]]
-export const WIKILINK = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
+// 表の中では [[名前\|表示]] と | をエスケープするので、| の前の \ はリンク先に含めない
+export const WIKILINK = /\[\[([^\]|#\\]+)(?:#([^\]|\\]+))?\\?(?:\|([^\]]+))?\]\]/g;
 
 export type Note = {
   /** URL の各階層。例: ["Claude-Code", "01_概要とインストール"] */

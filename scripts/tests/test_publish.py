@@ -87,6 +87,18 @@ class UnlinkMissingTest(unittest.TestCase):
     def test_存在するノートへのリンクは残す(self):
         self.assertEqual(sync.unlink_missing("[[認証#見出し]]", {"認証"}), "[[認証#見出し]]")
 
+    def test_表の中のエスケープしたエイリアスも存在するノートとして扱う(self):
+        text = "| [[認証\\|表示]] |"
+        self.assertEqual(sync.unlink_missing(text, {"認証"}), text)
+
+    def test_表の中の見出し付きリンクもエスケープを含めない(self):
+        text = "| [[認証#見出し\\|表示]] |"
+        self.assertEqual(sync.unlink_missing(text, {"認証"}), text)
+        self.assertEqual(sync.WIKILINK.search(text).group(2), "#見出し")
+
+    def test_表の中の存在しないノートは名前にエスケープを残さない(self):
+        self.assertEqual(sync.unlink_missing("| [[無い\\|]] |", set()), "| 無い |")
+
     def test_コードの中は触らない(self):
         text = "`[[無い]]`\n```\n[[無い]]\n```"
         self.assertEqual(sync.unlink_missing(text, set()), text)
