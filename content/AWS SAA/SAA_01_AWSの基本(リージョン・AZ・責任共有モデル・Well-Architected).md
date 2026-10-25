@@ -1,6 +1,6 @@
 ---
 title: "SAA 01 AWSの基本(リージョン・AZ・責任共有モデル・Well-Architected)"
-modified: 2026-10-18
+modified: 2026-10-25
 ---
 
 ← [[AWS SAA]] / 次 → [[SAA_02_IAMとセキュリティ(IAM・KMS・Organizations・WAF)]]
@@ -53,7 +53,7 @@ SAA の問題はほぼこの柱のどれかを問う。
 
 | 柱 | 一言 | 試験での典型的な答え |
 | --- | --- | --- |
-| **運用上の優秀性** | 運用を自動化・改善し続ける | CloudFormation、CloudWatch、Systems Manager |
+| **運用上の優秀性** | 運用を自動化・改善し続ける | CloudFormation、CloudWatch、Systems Manager([[SAA_補足_Systems Manager(Session Manager・Parameter Store・Patch Manager)\|補足ノート]]) |
 | **セキュリティ** | 最小権限、全層で防御、暗号化 | IAM ロール、KMS、WAF、プライベートサブネット |
 | **信頼性** | 障害から自動で回復する | マルチAZ、Auto Scaling、疎結合(SQS) |
 | **パフォーマンス効率** | 適切なリソースを選ぶ | キャッシュ(CloudFront・ElastiCache)、サーバーレス |
@@ -83,3 +83,4 @@ SAA は「どれも動くが、**条件に一番合うのはどれか**」を選
 
 ## 関連ノート
 - [[IPアドレス・サブネット]] ― VPC を理解する前提
+- [[SAA_補足_Systems Manager(Session Manager・Parameter Store・Patch Manager)]] ― 運用上の優秀性の代表サービス
