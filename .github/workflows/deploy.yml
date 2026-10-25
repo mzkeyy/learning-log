@@ -18,39 +18,26 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Next.js のアプリは web/ にある。ノートは web/ の1つ上の content/ から読む
+    defaults:
+      run:
+        working-directory: web
     steps:
-      - name: Checkout notes
-        uses: actions/checkout@v7
-        with:
-          path: site
-      # Quartz 本体はリポジトリに含めず、ビルド時にバージョン固定で取得する
-      - name: Checkout Quartz
-        uses: actions/checkout@v7
-        with:
-          repository: jackyzha0/quartz
-          ref: v4.5.2
-          path: quartz
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
-          cache-dependency-path: quartz/package-lock.json
-      - name: Apply config and content
-        run: |
-          cp site/quartz.config.ts site/quartz.layout.ts quartz/
-          cp site/styles/custom.scss quartz/quartz/styles/custom.scss
-          rm -rf quartz/content
-          cp -R site/content quartz/content
+          cache-dependency-path: web/package-lock.json
       - name: Install Dependencies
-        working-directory: quartz
         run: npm ci
-      - name: Build Quartz
-        working-directory: quartz
-        run: npx quartz build
+      # next build で out/ に全ページを出力し、続けて postbuild の pagefind が検索用データを作る
+      - name: Build
+        run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: quartz/public
+          path: web/out
 
   deploy:
     needs: build
