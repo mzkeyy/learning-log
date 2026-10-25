@@ -7,6 +7,25 @@ import { SITE } from "@/lib/config";
 import { getSiteIndex } from "@/lib/site";
 import "./globals.css";
 
+/**
+ * 読み込んでよいものを自分のサイトだけに絞る(Content Security Policy)。
+ * GitHub Pages ではレスポンスヘッダーを設定できないので <meta> で指定する。
+ * - Next.js と next-themes はページ内に <script> を埋め込むので 'unsafe-inline' が要る
+ * - 検索(Pagefind)は WebAssembly を使うので 'wasm-unsafe-eval' が要る
+ * - 開発サーバーは eval を使うので、本番ビルドだけに付ける
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'none'",
+].join("; ");
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -33,6 +52,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {process.env.NODE_ENV === "production" && <meta httpEquiv="Content-Security-Policy" content={CSP} />}
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+      </head>
       <body className="flex min-h-full flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <SiteHeader fields={fields} />

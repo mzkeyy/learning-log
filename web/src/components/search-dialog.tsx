@@ -33,6 +33,11 @@ function loadPagefind() {
   return pagefind;
 }
 
+/** HTML から <mark> と </mark> 以外のタグを取り除く */
+function onlyMarkTags(html: string): string {
+  return html.replace(/<(?!\/?mark>)[^>]*>/g, "");
+}
+
 export function SearchDialog() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -128,10 +133,11 @@ export function SearchDialog() {
                     className="block rounded-md px-3 py-2 hover:bg-muted"
                   >
                     <p className="text-sm font-medium">{r.title}</p>
-                    {/* Pagefind の抜粋は本文をエスケープ済みで、一致箇所だけ <mark> で囲んだ HTML */}
+                    {/* Pagefind の抜粋は本文をエスケープ済みで、一致箇所だけ <mark> で囲んだ HTML。
+                        念のため <mark> 以外のタグは取り除いてから表示する */}
                     <p
                       className="mt-0.5 line-clamp-2 text-xs text-muted-foreground [&_mark]:bg-yellow-200 [&_mark]:text-foreground dark:[&_mark]:bg-yellow-500/40"
-                      dangerouslySetInnerHTML={{ __html: r.excerpt }}
+                      dangerouslySetInnerHTML={{ __html: onlyMarkTags(r.excerpt) }}
                     />
                   </Link>
                 </li>

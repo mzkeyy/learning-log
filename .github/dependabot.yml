@@ -1,0 +1,8 @@
+# Actions の新しいバージョンが出たら PR を作る(マージは自分で確認してから)
+# アクションはコミット ID で固定しているので、更新はこの PR で行う
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

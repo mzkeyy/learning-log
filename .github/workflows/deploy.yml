@@ -6,10 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+# 既定は読み取りだけ。公開に必要な権限は deploy ジョブにだけ渡す
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -23,24 +22,30 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false # ビルド中のコードに push 用の認証情報を残さない
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: web/package-lock.json
+      # 依存パッケージのインストールスクリプトは実行しない(ビルドには不要。乗っ取られたパッケージ対策)
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       # next build で out/ に全ページを出力し、続けて postbuild の pagefind が検索用データを作る
       - name: Build
         run: npm run build
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: web/out
 
   deploy:
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -48,4 +53,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
