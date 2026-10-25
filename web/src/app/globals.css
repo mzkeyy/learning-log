@@ -1,22 +1,203 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 /* Markdown の本文を整える prose クラス */
 @plugin "@tailwindcss/typography";
-
-/* ダークモードは段階3で shadcn/ui のテーマと一緒に入れる */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* 英数字は Geist、日本語は OS の標準フォント(Mac ならヒラギノ)で表示する */
-  --font-sans: var(--font-geist-sans), "Hiragino Sans", "Noto Sans JP", sans-serif;
-  --font-mono: var(--font-geist-mono);
+  /* 英数字は Geist、日本語は OS の標準フォント(Mac はヒラギノ、Windows は游ゴシック)で表示する */
+  --font-sans: var(--font-geist-sans), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ---- ノート本文(Markdown)の見た目 ----
+ typography プラグイン(prose)の上書きなので、@layer に入れない。
+ @layer の中に書くと、プラグイン側(utilities 層)のほうが優先されて効かなくなる。 */
+
+/* 日本語は行間を広めに */
+.prose :where(p, li) {
+  line-height: 1.85;
+}
+
+/* 見出しへのリンクで飛んだとき、固定ヘッダーに隠れないようにする */
+.prose :where(h2, h3, h4) {
+  scroll-margin-top: 5rem;
+}
+
+/* 横に長い表は、表だけ横にスクロールさせる(markdown.ts の rehypeTableWrap が枠を付ける) */
+.prose .table-wrap {
+  @apply my-6 overflow-x-auto;
+}
+.prose .table-wrap > table {
+  @apply my-0;
+}
+
+/* 本文中のコード: prose が付ける ` を消して、背景を付ける */
+.prose :where(:not(pre) > code) {
+  @apply rounded-md bg-muted px-1.5 py-0.5 font-medium;
+}
+.prose :where(:not(pre) > code)::before,
+.prose :where(:not(pre) > code)::after {
+  content: none;
+}
+
+/* コードブロック(rehype-pretty-code が出力する figure > pre > code) */
+.prose :where(pre) {
+  @apply rounded-lg border bg-muted/50 text-foreground;
+}
+/* shiki はライト・ダーク両方の色を CSS 変数で出力するので、テーマに合わせて切り替える */
+[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+.dark [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}
+
+/* Obsidian の callout(markdown.ts の remarkCallout が div.callout / details.callout に変換) */
+.prose .callout {
+  @apply my-6 rounded-xl border bg-card px-4 py-3;
+}
+.prose .callout-title {
+  @apply m-0 font-semibold text-foreground;
+}
+.prose .callout-content > :first-child {
+  @apply mt-2;
+}
+.prose .callout-content > :last-child {
+  @apply mb-0;
+}
+.prose .callout[data-callout="question"] {
+  @apply border-sky-500/40 bg-sky-500/5;
+}
+.prose .callout[data-callout="success"] {
+  @apply border-emerald-500/40 bg-emerald-500/5;
+}
+.prose .callout[data-callout="info"],
+.prose .callout[data-callout="note"] {
+  @apply border-blue-500/40 bg-blue-500/5;
+}
+.prose details.callout > summary {
+  @apply cursor-pointer select-none;
 }

@@ -1,15 +1,22 @@
+import { slug as toHeadingId } from "github-slugger";
 import type { Root as HastRoot } from "hast";
-import type { PhrasingContent, Root as MdastRoot } from "mdast";
+import { toString as hastToString } from "hast-util-to-string";
+import type {
+  Blockquote,
+  Paragraph,
+  PhrasingContent,
+  Root as MdastRoot,
+} from "mdast";
+import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
+import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
+import { bundledLanguages } from "shiki";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
-import { getLinkMap } from "./notes";
-
-// [[名前]] / [[名前#見出し]] / [[名前|表示名]] / [[名前#見出し|表示名]]
-const WIKILINK = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
+import { getNoteMap, WIKILINK } from "./notes";
 
 /**
  * Obsidian の wikilink を普通のリンクに変換する remark プラグイン。
@@ -17,7 +24,7 @@ const WIKILINK = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
  * [[...]](例: `[[...slug]]`)は自然に対象外になる。
  */
 function remarkWikilink() {
-  const links = getLinkMap();
+  const notes = getNoteMap();
   return (tree: MdastRoot) => {
     visit(tree, "text", (node, index, parent) => {
       if (!parent || index === undefined || !node.value.includes("[[")) return;
@@ -29,13 +36,14 @@ function remarkWikilink() {
         if (m.index > last) {
           parts.push({ type: "text", value: node.value.slice(last, m.index) });
         }
-        const href = links.get(target.trim());
+        const note = notes.get(target.trim());
         const label = alias ?? target;
         parts.push(
-          href
+          note
             ? {
                 type: "link",
-                url: heading ? `${href}#${heading}` : href,
+                // 見出しへのリンクは rehype-slug と同じ規則で id を作る
+                url: heading ? `${note.href}#${toHeadingId(heading)}` : note.href,
                 children: [{ type: "text", value: label }],
               }
             : // リンク先がないものは文字だけ残す(sync.py でも外しているが念のため)
@@ -54,14 +62,155 @@ function remarkWikilink() {
   };
 }
 
+const CALLOUT = /^\[!(\w+)\]([+-]?)[ \t]*/;
+const CALLOUT_LABELS: Record<string, string> = {
+  note: "メモ",
+  info: "情報",
+  tip: "ヒント",
+  abstract: "概要",
+  question: "質問",
+  success: "答え",
+  example: "例",
+  warning: "注意",
+  danger: "危険",
+  quote: "引用",
+};
+
+/**
+ * Obsidian の callout(> [!note] タイトル)を <div class="callout"> に変換する remark プラグイン。
+ * [!type]- / [!type]+ は折りたたみ式なので <details> と <summary> にする。
+ */
+function remarkCallout() {
+  return (tree: MdastRoot) => {
+    visit(tree, "blockquote", (node) => {
+      const first = node.children[0];
+      if (first?.type !== "paragraph") return;
+      const head = first.children[0];
+      if (head?.type !== "text") return;
+      const m = head.value.match(CALLOUT);
+      if (!m) return;
+
+      const type = m[1].toLowerCase();
+      const fold = m[2];
+      head.value = head.value.slice(m[0].length);
+
+      // 1行目(最初の改行まで)がタイトル、残りが本文
+      const titleNodes: PhrasingContent[] = [];
+      const rest: PhrasingContent[] = [];
+      let inTitle = true;
+      for (const child of first.children) {
+        if (!inTitle) {
+          rest.push(child);
+        } else if (child.type === "text" && child.value.includes("\n")) {
+          const i = child.value.indexOf("\n");
+          if (i > 0) titleNodes.push({ type: "text", value: child.value.slice(0, i) });
+          if (i < child.value.length - 1) {
+            rest.push({ type: "text", value: child.value.slice(i + 1) });
+          }
+          inTitle = false;
+        } else if (child.type === "break") {
+          inTitle = false;
+        } else {
+          titleNodes.push(child);
+        }
+      }
+      const hasTitle = titleNodes.some(
+        (n) => n.type !== "text" || n.value.trim() !== "",
+      );
+
+      const title: Paragraph = {
+        type: "paragraph",
+        children: hasTitle
+          ? titleNodes
+          : [{ type: "text", value: CALLOUT_LABELS[type] ?? type }],
+        data: {
+          hName: fold ? "summary" : "div",
+          hProperties: { className: ["callout-title"] },
+        },
+      };
+      const content: Blockquote = {
+        type: "blockquote",
+        children: [
+          ...(rest.length > 0 ? [{ ...first, children: rest }] : []),
+          ...node.children.slice(1),
+        ],
+        data: { hName: "div", hProperties: { className: ["callout-content"] } },
+      };
+
+      node.children = [title, content];
+      node.data = {
+        hName: fold ? "details" : "div",
+        hProperties: {
+          className: ["callout"],
+          dataCallout: type,
+          open: fold === "+" ? true : undefined,
+        },
+      };
+    });
+  };
+}
+
+/** shiki が知らない言語(gitignore など)は書式なしとして扱う。知らない言語があるとビルドが止まるため */
+function remarkCodeLang() {
+  return (tree: MdastRoot) => {
+    visit(tree, "code", (node) => {
+      if (node.lang && !(node.lang in bundledLanguages)) node.lang = "plaintext";
+    });
+  };
+}
+
+/** 横に長い表を、表だけ横スクロールする枠(div.table-wrap)で包む rehype プラグイン */
+function rehypeTableWrap() {
+  return (tree: HastRoot) => {
+    visit(tree, "element", (node, index, parent) => {
+      if (node.tagName !== "table" || !parent || index === undefined) return;
+      parent.children[index] = {
+        type: "element",
+        tagName: "div",
+        properties: { className: ["table-wrap"] },
+        children: [node],
+      };
+      return SKIP;
+    });
+  };
+}
+
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkWikilink)
+  .use(remarkCallout)
+  // Obsidian と同じく、1回の改行もそのまま改行として表示する(callout のタイトル分けより後に置く)
+  .use(remarkBreaks)
+  .use(remarkCodeLang)
   .use(remarkRehype)
-  .use(rehypeSlug);
+  .use(rehypeTableWrap)
+  .use(rehypeSlug)
+  .use(rehypePrettyCode, {
+    // ライト・ダークの両方の色を出力し、CSS で切り替える(globals.css)
+    theme: { light: "github-light", dark: "github-dark" },
+    keepBackground: false,
+    defaultLang: { block: "plaintext" },
+  });
 
 /** Markdown 本文 → HTML の構文木(hast)。描画は components/markdown.tsx が行う */
 export async function markdownToHast(markdown: string): Promise<HastRoot> {
   return processor.run(processor.parse(markdown));
+}
+
+export type TocItem = { id: string; text: string; depth: 2 | 3 };
+
+/** ページ内目次用に h2・h3 を取り出す */
+export function extractToc(tree: HastRoot): TocItem[] {
+  const items: TocItem[] = [];
+  for (const node of tree.children) {
+    if (node.type !== "element" || (node.tagName !== "h2" && node.tagName !== "h3")) {
+      continue;
+    }
+    const id = node.properties.id;
+    if (typeof id === "string") {
+      items.push({ id, text: hastToString(node), depth: node.tagName === "h2" ? 2 : 3 });
+    }
+  }
+  return items;
 }

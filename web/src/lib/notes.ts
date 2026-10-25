@@ -5,13 +5,20 @@ import matter from "gray-matter";
 // sync.py が作る公開用ノートの置き場所(web/ の1つ上の content/)
 const CONTENT_DIR = path.join(process.cwd(), "..", "content");
 
+// [[名前]] / [[名前#見出し]] / [[名前|表示名]] / [[名前#見出し|表示名]]
+export const WIKILINK = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
+
 export type Note = {
   /** URL の各階層。例: ["Claude-Code", "01_概要とインストール"] */
   slug: string[];
+  /** サイト内の URL(basePath なし)。例: "/Claude-Code/01_概要とインストール/" */
+  href: string;
   /** ファイル名(拡張子なし)。wikilink の [[名前]] はこれで探す */
   name: string;
   title: string;
   modified?: string;
+  /** フォルダに入っているノートなら、そのフォルダ名(= トピック)。例: "Claude Code" */
+  folder?: string;
   /** フロントマターを除いた Markdown 本文 */
   body: string;
 };
@@ -28,8 +35,11 @@ function readNote(relPath: string): Note {
   const raw = fs.readFileSync(path.join(CONTENT_DIR, relPath), "utf-8");
   const { data, content } = matter(raw);
   const name = path.basename(relPath, ".md");
+  const slug = toSlug(relPath);
+  const dir = path.dirname(relPath);
   return {
-    slug: toSlug(relPath),
+    slug,
+    href: `/${slug.join("/")}/`,
     name,
     title: typeof data.title === "string" ? data.title : name,
     // gray-matter は日付を Date に変換するので、YYYY-MM-DD の文字列に戻す
@@ -37,6 +47,7 @@ function readNote(relPath: string): Note {
       data.modified instanceof Date
         ? data.modified.toISOString().slice(0, 10)
         : data.modified,
+    folder: dir === "." ? undefined : dir,
     body: content,
   };
 }
@@ -62,9 +73,45 @@ export function getNoteBySlug(slug: string[]): Note | undefined {
   return getAllNotes().find((note) => note.slug.join("/") === key);
 }
 
-/** wikilink の [[名前]] → リンク先 URL の対応表 */
-export function getLinkMap(): Map<string, string> {
-  return new Map(
-    getAllNotes().map((note) => [note.name, `/${note.slug.join("/")}/`]),
+/** wikilink の [[名前]] → ノート の対応表 */
+export function getNoteMap(): Map<string, Note> {
+  return new Map(getAllNotes().map((note) => [note.name, note]));
+}
+
+/** トピック(フォルダ)の目次ノート。フォルダと同じ名前のノート。例: Claude Code/Claude Code.md */
+export function isTopicIndex(note: Note): boolean {
+  return note.folder !== undefined && path.basename(note.folder) === note.name;
+}
+
+/** 同じフォルダに入っている章ノート(目次ノート自身は除く) */
+export function getChapters(folder: string): Note[] {
+  return getAllNotes().filter(
+    (note) => note.folder === folder && !isTopicIndex(note),
   );
+}
+
+/** コードブロックとインラインコードを取り除いた本文。その中の [[...]] はリンクではないため */
+function stripCode(markdown: string): string {
+  return markdown.replace(/^```[\s\S]*?^```/gm, "").replace(/`[^`\n]*`/g, "");
+}
+
+let backlinkCache: Map<string, Note[]> | undefined;
+
+/** そのノートを [[wikilink]] で参照しているノートの一覧(バックリンク) */
+export function getBacklinks(note: Note): Note[] {
+  if (!backlinkCache) {
+    backlinkCache = new Map();
+    for (const source of getAllNotes()) {
+      const targets = new Set(
+        [...stripCode(source.body).matchAll(WIKILINK)].map((m) => m[1].trim()),
+      );
+      for (const target of targets) {
+        if (target === source.name) continue;
+        const list = backlinkCache.get(target) ?? [];
+        list.push(source);
+        backlinkCache.set(target, list);
+      }
+    }
+  }
+  return backlinkCache.get(note.name) ?? [];
 }
