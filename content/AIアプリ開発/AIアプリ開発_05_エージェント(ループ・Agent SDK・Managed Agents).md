@@ -71,7 +71,7 @@ for await (const message of query({
 ## MCP との関係
 - エージェントに渡すツールを **MCP サーバー**として作っておくと、Claude Code・Claude Desktop・自作エージェントで使い回せる → [[MCP]]
 - Claude API の MCP コネクタ(ベータ)や Agent SDK・Managed Agents から MCP サーバーをつなげる
-- 自作するなら `@modelcontextprotocol/sdk`(TypeScript)。[[Hono]] で HTTP の MCP サーバーを書く例も多い
+- 自作の手順 → [[AIアプリ開発_08_MCPサーバーを作る(TypeScript SDK・stdio・HTTP)]]
 
 ## 設計のコツ(公式の考え方)
 - **ツールは少なく、よく書く**。似たツールを並べるとモデルが迷う。説明文に「いつ使うか・使わないか」を書く

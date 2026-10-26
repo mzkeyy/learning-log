@@ -54,7 +54,7 @@ Host(Claude Desktop等)
 1. 使いたいMCPサーバーを選定(公式レジストリや `mcp-registry` で検索)
 2. Host側の設定ファイル(例: `claude_desktop_config.json` や `.claude/mcp.json`)にサーバーの起動コマンド・接続先を追記
 3. Hostを再起動してサーバーに接続 → Tool/Resourceが利用可能になる
-4. 個人用サーバーを自作する場合はSDK(Python/[[TypeScript]]等)で「どのTool/Resourceを公開するか」を実装するだけでよい
+4. 個人用サーバーを自作する場合はSDK(Python/[[TypeScript]]等)で「どのTool/Resourceを公開するか」を実装するだけでよい(手順 → [[AIアプリ開発_08_MCPサーバーを作る(TypeScript SDK・stdio・HTTP)]])
 
 ## 注意点
 - Tool呼び出しは外部への副作用(ファイル削除、送信、購入など)を伴い得るため、権限スコープを最小限にする
@@ -64,6 +64,7 @@ Host(Claude Desktop等)
 ## 関連
 - [[OpenAI]] — APIの具体例(料金体系など)
 - [[AIアプリ開発]] — Function Calling・エージェントを自分のアプリに組み込む
+- [[AIアプリ開発_08_MCPサーバーを作る(TypeScript SDK・stdio・HTTP)]] — MCP サーバーの作り方(TypeScript SDK v2)
 
 ## 参考
 - https://modelcontextprotocol.io/
