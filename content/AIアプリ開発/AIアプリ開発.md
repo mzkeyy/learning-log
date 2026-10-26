@@ -57,6 +57,6 @@ LLM の API(Claude API / OpenAI API など)
 - [OWASP Top 10 for LLM Applications](https://genai.owasp.org/)
 
 ## 関連
-- [[Claude Code]] / [[Codex]] / [[MCP]] / [[OpenAI]]
+- [[Claude Code]] / [[Codex]] / [[MCP]] / [[OpenAI]] / [[AIエンジニアリング]](コンテキスト・ハーネス・評価の設計)
 - [[Hono]] / [[Next.js]] / [[Cloudflare]] / [[TypeScript]]
 - [[オブザーバビリティ]] / [[Webセキュリティ対策]] / [[APIキー・シークレット管理]]
