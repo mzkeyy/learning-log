@@ -57,7 +57,7 @@ export function Button({ variant = 'primary', className, ...props }: ButtonProps
 | 入力欄の反応が遅い | `useDeferredValue` / `useTransition` で重い更新を後回しに |
 | 最初の表示が遅い | バンドルを小さく(`lazy` + `Suspense` で画面ごとに分割)、Server Components |
 | Context で全体が再描画 | 値を分ける、頻繁に変わる値は Zustand に |
-- 画面の表示速度の測り方(Core Web Vitals)→ Webパフォーマンスとアクセシビリティ
+- 画面の表示速度の測り方(Core Web Vitals)→ [[Webパフォーマンスとアクセシビリティ_01_Core Web Vitalsと測り方]]
 
 ## エラーの扱い
 - 描画中のエラーで画面全体が真っ白にならないよう、**Error Boundary**(`react-error-boundary` が手軽)で区切る
