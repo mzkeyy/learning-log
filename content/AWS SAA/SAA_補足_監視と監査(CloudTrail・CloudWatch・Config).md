@@ -100,3 +100,4 @@ AWS リソースの **設定がいつ、どう変わったか** を記録し、*
 - [[SAA_補足_ログのまとめ(種類・保存先・分析)]] ― CloudTrail 以外のログ(VPC フローログ・ELB・CloudFront など)と分析のしかた
 - [[SAA_02_IAMとセキュリティ(IAM・KMS・Organizations・WAF)]] ― Organizations、GuardDuty
 - [[SAA_08_高可用性・DR・移行(バックアップ・DR戦略・監視)]] ― 監視をふまえた構成
+- [[オブザーバビリティ]] ― AWS に限らない監視の考え方(ログ・メトリクス・トレース・アラート設計)

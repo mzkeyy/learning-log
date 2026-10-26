@@ -27,6 +27,7 @@ modified: 2026-09-29
 - `console.error` / `console.warn` は重要度付きで表示
 - リアルタイム: `npx wrangler tail`
 - 外部サービスへ: OpenTelemetry エクスポート(推奨)、Logpush
+- トレース・Issues・Sentry など監視全体の考え方 → [[オブザーバビリティ]]
 
 ## 公式ベストプラクティス(要点)
 ### 設定
@@ -84,4 +85,5 @@ modified: 2026-09-29
 
 ## 関連
 - 前: [[Cloudflare_05_フレームワーク連携とデプロイ]] / 目次: [[Cloudflare]]
+- [[オブザーバビリティ]] / [[AIアプリ開発]]
 - 公式: https://developers.cloudflare.com/workers/best-practices/workers-best-practices/ , https://developers.cloudflare.com/workers/platform/limits/ , https://developers.cloudflare.com/workers/observability/logs/workers-logs/ , https://developers.cloudflare.com/workers/get-started/prompting/

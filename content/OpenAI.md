@@ -21,6 +21,10 @@ OpenAI APIは従量課金制(使った分だけ課金)。新規登録時に少�
 - OpenAIの管理画面で使用上限額(Usage limits)を設定しておくと安心
 - APIキーが漏洩すると第三者に使われて課金されるリスクあり → `.env`は`.gitignore`で管理し、絶対にコミットしない
 
+## 関連
+- [[AIアプリ開発]] — LLM の API を使ったアプリの作り方
+- [[MCP]]
+
 ## 参考
 - https://devtk.ai/en/models/gpt-4o-mini/
 - https://www.finout.io/blog/openai-pricing-in-2026

@@ -117,7 +117,7 @@ app.get('/', (c) => {
 ## その他よく使うヘルパー
 | import | 用途 |
 | --- | --- |
-| `hono/streaming` | `stream()` / `streamText()` / **`streamSSE()`**(AI の回答を少しずつ返す) |
+| `hono/streaming` | `stream()` / `streamText()` / **`streamSSE()`**(AI の回答を少しずつ返す → [[AIアプリ開発_06_画面との連携(AI SDK・Hono・Next.js)]]) |
 | `hono/ssg` | アプリから静的 HTML を書き出す(`toSSG`) |
 | `hono/html` | テンプレートリテラルで HTML(JSX を使わない場合) |
 | `hono/proxy` | 別のサーバーへ中継(`proxy(url, c.req)`) |

@@ -112,3 +112,4 @@ modified: 2026-10-25
 - [[SAA_03_ネットワーク(VPC・ELB・Route 53・CloudFront)]] ― VPC・ELB・CloudFront
 - [[SAA_05_ストレージ(S3・EBS・EFS・FSx)]] ― S3 のライフサイクル・Object Lock
 - [[SAA_07_疎結合と分析(SQS・SNS・EventBridge・Kinesis・Athena)]] ― Kinesis・Athena
+- [[オブザーバビリティ_06_AWSのログ設計(アカウント構成・保存期間・コスト)]] ― 実際のシステムでログをどう設計するか(アカウント構成・保存期間・費用)

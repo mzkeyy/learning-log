@@ -63,6 +63,7 @@ Host(Claude Desktop等)
 
 ## 関連
 - [[OpenAI]] — APIの具体例(料金体系など)
+- [[AIアプリ開発]] — Function Calling・エージェントを自分のアプリに組み込む
 
 ## 参考
 - https://modelcontextprotocol.io/

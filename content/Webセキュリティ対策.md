@@ -104,6 +104,7 @@ db.prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?").bind(id, session
 - 本番で**スタックトレースやSQLエラーを画面に出さない**(内部構造のヒントになる)
 - ログに**パスワード・トークン・個人情報を出力しない**
 - 不審なアクセス(ログイン失敗の連続など)は記録して気付けるようにする
+- ログの残し方 → [[オブザーバビリティ_02_ログ(構造化ログ・レベル・個人情報)]]
 
 ### レート制限・Bot対策
 - ログイン・問い合わせフォーム・APIに回数制限をかける
@@ -132,6 +133,7 @@ db.prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?").bind(id, session
 
 ## 関連
 - [[HTTP・HTTPS・TLS]]
+- [[AIアプリ開発_07_評価・コスト・セキュリティ・運用]] — LLM アプリ特有の攻撃(プロンプトインジェクション)
 - [[APIキー・シークレット管理]]
 - [[Cloudflare]]
 - [[Next.js]]
