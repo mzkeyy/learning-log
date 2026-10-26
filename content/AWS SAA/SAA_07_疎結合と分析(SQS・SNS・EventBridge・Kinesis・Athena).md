@@ -113,3 +113,4 @@ flowchart LR
 
 ## 関連ノート
 - [[GraphQL]] ― AppSync
+- [[アーキテクチャ設計_04_非同期処理とイベント駆動(キュー・Pub-Sub・冪等性)]] ― 冪等性・DLQ・Outbox など、キューを使う設計

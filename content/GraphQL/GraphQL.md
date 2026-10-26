@@ -43,3 +43,4 @@ AuthorBadge.tsx
 
 ## 関連
 - [[N+1]] / [[Next.js]] / [[MCP]]
+- [[アーキテクチャ設計_03_API設計とBFF(REST・GraphQL・RPC)]] — REST・RPC との使い分け、BFF
