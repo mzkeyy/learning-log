@@ -181,4 +181,5 @@ app.get('/sse', (c) =>
 
 ## 関連
 - 前: [[Hono_05_ランタイム別の動かし方とデプロイ]] / 目次: [[Hono]]
+- テスト全般(Vitest・MSW・Playwright)→ [[テスト]]
 - 公式: https://hono.dev/docs/guides/best-practices , https://hono.dev/docs/guides/testing , https://hono.dev/docs/helpers/testing , https://hono.dev/docs/guides/jsx , https://hono.dev/docs/helpers/streaming , https://hono.dev/docs/guides/migrating-to-v5 , https://hono.dev/docs/agents/

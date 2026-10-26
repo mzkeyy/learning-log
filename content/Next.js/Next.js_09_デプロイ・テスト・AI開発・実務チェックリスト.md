@@ -37,6 +37,7 @@ npm run start   # 本番モードで動作確認
 | 単体テスト | **Vitest**(または Jest) | 関数・部品単体 |
 | E2E テスト | **Playwright**(または Cypress) | ブラウザで実際に操作して画面全体 |
 - async な Server Component は単体テストツールの対応が不十分 → **E2E でカバー**するのが公式の推奨
+- Vitest・Playwright の書き方 → [[テスト]]
 ```bash
 npm init playwright@latest
 npx playwright test
