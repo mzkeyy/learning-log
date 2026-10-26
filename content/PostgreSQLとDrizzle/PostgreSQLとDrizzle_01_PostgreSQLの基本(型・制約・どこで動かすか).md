@@ -59,7 +59,7 @@ CREATE TABLE posts (
 ## どこで動かすか
 | 場所 | 方法 | メモ |
 | --- | --- | --- |
-| 手元 | **Docker** で `postgres` イメージを起動 | バージョンを本番と揃えられる。テストにも使える |
+| 手元 | **Docker** で `postgres` イメージを起動(→ [[Docker_03_Docker Compose(開発環境・DB・watch)]]) | バージョンを本番と揃えられる。テストにも使える |
 | マネージド(AWS) | RDS for PostgreSQL / Aurora PostgreSQL | バックアップ・冗長化・パッチを任せられる → [[SAA_06_データベース(RDS・Aurora・DynamoDB・ElastiCache)]] |
 | サーバーレス Postgres | **Neon**、Aurora Serverless | 使っていないときは止まる・ブランチ機能(DB のコピーをすぐ作れる) |
 | BaaS | **Supabase** | Postgres + 認証 + ストレージ + 自動の API |

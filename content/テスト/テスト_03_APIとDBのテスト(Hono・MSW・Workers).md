@@ -89,7 +89,7 @@ it('外部 API が 500 なら、こちらは 502 を返す', async () => {
 | **本物と同じ種類の DB をテスト用に用意** | 本番に近い。SQL の間違いも見つかる | 準備が必要・少し遅い |
 | メモリ上の DB(SQLite など) | 速い | 本番(PostgreSQL)と挙動が違うことがある |
 | リポジトリをモック | 速い | SQL の間違いは見つからない |
-- **おすすめは本物と同じ種類の DB**(PostgreSQL なら PostgreSQL)。Docker や Testcontainers で、テスト用のコンテナを立てる → Docker
+- **おすすめは本物と同じ種類の DB**(PostgreSQL なら PostgreSQL)。Docker や Testcontainers で、テスト用のコンテナを立てる → [[Docker]]
 - テストごとにデータを片付ける方法:
   - テストごとにトランザクションを張り、最後にロールバック
   - テストの前にテーブルを空にする(`TRUNCATE`)
