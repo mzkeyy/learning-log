@@ -108,5 +108,5 @@ test('フォームを送信すると完了メッセージ', async () => {
 
 ## 関連
 - 前: [[テスト_03_APIとDBのテスト(Hono・MSW・Workers)]] / 次: [[テスト_05_E2Eテスト(Playwright)]]
-- React / [[Next.js]] / [[shadcn-ui]]
+- [[React]] / [[Next.js]] / [[shadcn-ui]]
 - 公式: https://vitest.dev/guide/browser/ , https://vitest.dev/guide/browser/component-testing , https://testing-library.com/docs/queries/about#priority , https://testing-library.com/docs/user-event/intro
