@@ -112,4 +112,5 @@ my-app/
 
 ## 関連
 - [[Next.js]] / 次: [[Next.js_02_ルーティング]]
+- [[React]] … React そのもの(フック・React 19・状態管理)を詳しく
 - 公式: https://nextjs.org/docs/app/getting-started/installation , https://nextjs.org/docs/app/getting-started/project-structure
