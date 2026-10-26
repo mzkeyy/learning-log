@@ -7,3 +7,4 @@ GitHub Actionsなどを使ってテストやデプロイを自動化する設定
 
 ## 関連
 - 📚 [[Git]](push / Pull Request の仕組み)
+- 📚 [[テスト]](CI で回すテストの書き方)
