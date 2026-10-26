@@ -43,7 +43,7 @@ export default {
   },
 } satisfies ExportedHandler<Env>
 ```
-> API を本格的に書くなら **Hono**(Workers 向けに人気の軽量フレームワーク)を使うと楽。
+> API を本格的に書くなら **[[Hono]]**(Workers 向けに人気の軽量フレームワーク)を使うと楽。
 
 ## Wrangler(CLI)の主なコマンド
 | コマンド | 用途 |
