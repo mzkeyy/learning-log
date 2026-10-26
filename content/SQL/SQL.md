@@ -126,3 +126,4 @@ D1 の中身は SQLite だが、**Cloudflare がサービスとして運用** �
 - [[中間テーブル]] ― 多対多の関係を表すテーブル
 - [[Webセキュリティ対策]] ― SQL インジェクション対策
 - [[Cloudflare]] ― D1(SQLite ベースのDB)
+- [[PostgreSQLとDrizzle]] ― TypeScript から PostgreSQL を使う(ORM・マイグレーション・接続)
