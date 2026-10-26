@@ -53,7 +53,7 @@ jobs:
 
 ## テストのデータと環境
 - テスト用の環境変数は `.env.test` などで分ける。本番の DB・API キーをテストで使わない
-- DB を使うテストは CI でもコンテナで同じ DB を立てる(GitHub Actions の `services`、Testcontainers)→ Docker
+- DB を使うテストは CI でもコンテナで同じ DB を立てる(GitHub Actions の `services`、Testcontainers)→ [[Docker]]
 - E2E はステージング環境に対して回す方法と、CI の中でアプリを起動して回す方法がある
 
 ## AI とテスト
