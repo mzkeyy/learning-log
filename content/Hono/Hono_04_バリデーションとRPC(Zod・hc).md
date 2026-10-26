@@ -164,5 +164,5 @@ export type AppType = typeof routes
 
 ## 関連
 - 前: [[Hono_03_ミドルウェア(組み込み・自作・認証)]] / 次: [[Hono_05_ランタイム別の動かし方とデプロイ]]
-- [[TypeScript]] / [[静的型付言語]]
+- [[TypeScript]] / [[静的型付言語]] / [[モノレポ]](フロントと API を1つのリポジトリで)
 - 公式: https://hono.dev/docs/guides/validation , https://hono.dev/docs/guides/rpc , https://hono.dev/docs/concepts/stacks , https://hono.dev/docs/guides/best-practices
