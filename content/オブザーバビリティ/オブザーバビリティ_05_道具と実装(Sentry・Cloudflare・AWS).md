@@ -87,6 +87,7 @@ try { await chargeCard() } catch (e) { Sentry.captureException(e); throw e }
 | 外形監視 | CloudWatch Synthetics |
 | 監査(誰が何をしたか) | CloudTrail |
 - 詳しく → [[SAA_補足_監視と監査(CloudTrail・CloudWatch・Config)]] / [[SAA_補足_ログのまとめ(種類・保存先・分析)]]
+- 何をどこにどれだけ残すかの決め方 → [[オブザーバビリティ_06_AWSのログ設計(アカウント構成・保存期間・コスト)]]
 
 ## AI アプリの監視
 普通の Web アプリの指標に加えて、次を記録する。→ [[AIアプリ開発_07_評価・コスト・セキュリティ・運用]]
@@ -113,6 +114,6 @@ try { await chargeCard() } catch (e) { Sentry.captureException(e); throw e }
 - [ ] デプロイ時刻・バージョンがわかり、すぐロールバックできる → [[Cicdパイプライン]]
 
 ## 関連
-- 前: [[オブザーバビリティ_04_トレースとOpenTelemetry]] / 目次: [[オブザーバビリティ]]
+- 前: [[オブザーバビリティ_04_トレースとOpenTelemetry]] / 次: [[オブザーバビリティ_06_AWSのログ設計(アカウント構成・保存期間・コスト)]]
 - [[Cloudflare]] / [[AWS SAA]] / [[Hono]] / [[AIアプリ開発]]
 - 参考: https://docs.sentry.io/platforms/javascript/guides/cloudflare/ , https://docs.sentry.io/platforms/javascript/guides/node/ , https://developers.cloudflare.com/workers/observability/ , https://developers.cloudflare.com/workers/observability/opentelemetry-export/
