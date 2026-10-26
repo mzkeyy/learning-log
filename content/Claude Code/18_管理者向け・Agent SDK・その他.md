@@ -21,6 +21,7 @@ pip install claude-agent-sdk                  # Python
 | ターミナルで対話的に開発 | Claude Code CLI |
 | Claude API を直接呼ぶ(ツールループは自前) | Client SDK(`anthropic` パッケージ) |
 | サーバー側で管理されたエージェント | Managed Agents |
+- 4つの作り方の比較とアプリへの組み込み方 → [[AIアプリ開発_05_エージェント(ループ・Agent SDK・Managed Agents)]]
 
 ## 組織への導入(Administration)
 - **管理設定(Managed settings)**: 組織のポリシーを全開発者のPCに配布。誰も上書きできない。配布方法は claude.ai 管理コンソール / MDM / ファイル
@@ -88,5 +89,5 @@ pip install claude-agent-sdk                  # Python
 - ※ What's new(週ごとのダイジェスト)は Week 37(9月7〜11日)以降は更新が止まっているので、それ以降は Changelog を見る
 
 ## 関連
-- [[Claude Code]]
+- [[Claude Code]] / [[AIアプリ開発]]
 - 公式: https://code.claude.com/docs/en/agent-sdk/overview , https://code.claude.com/docs/en/admin-setup , https://code.claude.com/docs/en/data-usage , https://code.claude.com/docs/en/troubleshooting
