@@ -112,8 +112,8 @@ export function ThemeProvider({ children, ...props }: React.ComponentProps<typeo
 - Vite / Astro / Remix 用の手順も公式にある
 
 ## 実務のルール
-- **色を直書きしない**(`bg-[#FFC306]` ではなく `bg-primary`)→ AI にもこのルールを CLAUDE.md で伝える
-- 主要アクション(`primary`)は1画面に1つ程度([[デザイントークン]] のジョブアンテナの例と同じ考え方)
+- **色を直書きしない**(`bg-[#ff5500]` ではなく `bg-primary`)→ AI にもこのルールを CLAUDE.md で伝える
+- 主要アクション(`primary`)は1画面に1つ程度→ [[デザイントークン_02_設計と命名(カテゴリ別)]]
 - 新しい色が必要になったら「トークンとして追加」してから使う
 
 ## 関連
