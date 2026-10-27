@@ -29,6 +29,7 @@ Web 開発まわりで学んだことのまとめノートです。個人の学�
 | [[Next.js]] | {{n:Next.js}} |
 | [[TanStack Start]] | {{n:TanStack Start}} |
 | [[shadcn-ui]] | {{n:shadcn-ui}} |
+| [[コンポーネント設計]] | {{n:コンポーネント設計}} |
 | [[GraphQL]] | {{n:GraphQL}} |
 | [[Vite]] | {{n:Vite}} |
 | [[Tailwind CSS]] | {{n:Tailwind CSS}} |

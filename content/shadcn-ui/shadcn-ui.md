@@ -40,5 +40,5 @@ import { Button } from '@/components/ui/button'
 - 日本語: https://www.shadcn.net/ja
 
 ## 関連
-- [[Tailwind CSS]] / [[デザイントークン]] / [[デザインシステム]]
+- [[Tailwind CSS]] / [[デザイントークン]] / [[デザインシステム]] / [[コンポーネント設計]]
 - [[Next.js]] / [[Vite]] / [[TanStack Start]]

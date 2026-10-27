@@ -58,5 +58,5 @@ export function Counter() {
 
 ## 関連
 - [[Next.js]] / [[Next.js_01_はじめに(React基礎・インストール・構成)]] / [[TanStack Start]] / [[Vite]]
-- [[TypeScript]] / [[shadcn-ui]] / [[Tailwind CSS]] / [[テスト_04_コンポーネントテスト(Testing Library・Browser Mode)]]
+- [[TypeScript]] / [[shadcn-ui]] / [[Tailwind CSS]] / [[テスト_04_コンポーネントテスト(Testing Library・Browser Mode)]] / [[コンポーネント設計]]
 - 公式: https://react.dev/learn , https://react.dev/reference/react
