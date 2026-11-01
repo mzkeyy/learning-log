@@ -117,4 +117,5 @@ export function BugReportForm() {
 
 ## 関連
 - 前: [[shadcn-ui_04_コンポーネント地図と使い方]] / 次: [[shadcn-ui_06_レジストリ・MCP・AI開発・実務の注意]]
+- [[Zod]](スキーマの書き方・エラーの扱い)
 - 公式: https://ui.shadcn.com/docs/forms/react-hook-form , https://ui.shadcn.com/docs/components/field

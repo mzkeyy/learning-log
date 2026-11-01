@@ -15,6 +15,7 @@ React の公式ドキュメント(react.dev、**2026年10月時点。React 19.3�
 | 03 | [[React_03_React 19の機能(Actions・use・Activity・Compiler)]] | フォームと Actions、楽観的更新、Compiler |
 | 04 | [[React_04_状態管理とデータ取得(Context・Zustand・TanStack Query)]] | 状態の置き場所、サーバーのデータ、フォーム |
 | 05 | [[React_05_実務(構成・性能・型・AI開発)]] | フォルダ構成、性能、TypeScript、チェックリスト |
+| 06 | [[React_06_propsの受け取り方(分割代入する・しない・型・既定値)]] | 分割代入する・しない書き方の比較、既定値、rest、型、ユニオン型、Fragment Colocation での名前 |
 
 ## React の考え方
 ```
@@ -44,7 +45,7 @@ export function Counter() {
 | 形 | 道具 | 向く場面 |
 | --- | --- | --- |
 | 画面だけ(SPA) | **[[Vite]]** + React | 管理画面・ログイン後のアプリ。API は別に([[Hono]] など) |
-| フルスタック | **[[Next.js]]** / [[TanStack Start]] / React Router | SEO が要るサイト、サーバー処理も一緒に |
+| フルスタック | **[[Next.js]]** / [[TanStack Start]] / [[React Router]] | SEO が要るサイト、サーバー処理も一緒に |
 | モバイル | React Native(Expo) | iOS・Android アプリ |
 - 新しく始めるなら**フレームワーク(Next.js など)か Vite**。Create React App は終了している
 
@@ -57,6 +58,7 @@ export function Counter() {
 - 部品は [[shadcn-ui]] のようなコピーして使う UI 部品集が主流 → [[デザインシステム]]
 
 ## 関連
-- [[Next.js]] / [[Next.js_01_はじめに(React基礎・インストール・構成)]] / [[TanStack Start]] / [[Vite]]
+- [[Next.js]] / [[Next.js_01_はじめに(React基礎・インストール・構成)]] / [[TanStack Start]] / [[React Router]] / [[Vite]]
+- [[SSR]](サーバーで描く仕組みを自作して理解する)/ [[Zod]](フォームや API の入力の検証)
 - [[TypeScript]] / [[shadcn-ui]] / [[Tailwind CSS]] / [[テスト_04_コンポーネントテスト(Testing Library・Browser Mode)]] / [[コンポーネント設計]]
 - 公式: https://react.dev/learn , https://react.dev/reference/react

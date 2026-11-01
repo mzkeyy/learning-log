@@ -46,5 +46,6 @@ modified: 2026-10-18
 - [Vite team boasts 10-30x faster builds (DEVCLASS)](https://www.devclass.com/development/2026/03/17/vite-team-boasts-10-30x-faster-builds-with-rust-powered-rolldown/5209472)
 
 ## 関連
-- [[TanStack Start]](Vite ベースのフルスタック FW)
+- [[TanStack Start]] / [[React Router]](Vite ベースのフルスタック FW)
+- [[SSR_04_ViteでSSR(開発サーバー・ビルド・本番)]](Vite で SSR を自作する)
 - [[Next.js]] / [[Cloudflare]]

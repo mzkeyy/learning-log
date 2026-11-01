@@ -111,4 +111,5 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 ## 関連
 - 前: [[TypeScript_10_tsconfig・strict・実行環境・バージョン]] / 目次: [[TypeScript]]
+- [[Zod]](実行時の検証を詳しく)
 - 出典: https://zod.dev , https://www.typescriptlang.org/docs/handbook/2/narrowing.html , https://nextjs.org/docs/app/api-reference/config/typescript

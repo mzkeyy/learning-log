@@ -67,7 +67,7 @@ my-app/
 ```
 
 ## Vite を使う代表的なもの
-- **フルスタックFW**: [[TanStack Start]]、React Router(旧 Remix)、SvelteKit、Nuxt、SolidStart、Astro
+- **フルスタックFW**: [[TanStack Start]]、[[React Router]](旧 Remix)、SvelteKit、Nuxt、SolidStart、Astro
 - **テスト**: Vitest(Vite の設定をそのまま使える)
 - **公式 React プラグイン**: `@vitejs/plugin-react`(RSC 用 `@vitejs/plugin-rsc` もある)
 

@@ -94,4 +94,5 @@ src/
 ## 関連
 - 前: [[GraphQL_02_Fragmentの基礎]] / 次: [[GraphQL_04_Fragment Masking(データマスキング)]]
 - [[デザインの4原則]](「近接」のコード版)
+- [[React_06_propsの受け取り方(分割代入する・しない・型・既定値)]](フラグメントの参照を props で受け取るときの書き方)
 - 参考: https://zenn.dev/moneyforward/articles/20221211-fragment-colocation

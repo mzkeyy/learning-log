@@ -68,6 +68,7 @@ modified: 2026-10-18
 - [Next.js 16.2 Tutorial (Tech Insider)](https://tech-insider.org/nextjs-tutorial-full-stack-app-2026/)
 
 ## 関連
-- [[TanStack Start]] / [[Vite]] … 比較対象
+- [[TanStack Start]] / [[React Router]] / [[Vite]] … 比較対象
+- [[SSR]] … SSR・ハイドレーションの仕組み
 - [[shadcn-ui]] / [[Tailwind CSS]] … UI
 - [[Cloudflare]] … デプロイ先

@@ -97,6 +97,6 @@ export function Button({ variant = 'primary', className, ...props }: ButtonProps
 - [ ] eslint-plugin-react-hooks を入れている
 
 ## 関連
-- 前: [[React_04_状態管理とデータ取得(Context・Zustand・TanStack Query)]] / 目次: [[React]]
+- 前: [[React_04_状態管理とデータ取得(Context・Zustand・TanStack Query)]] / 次: [[React_06_propsの受け取り方(分割代入する・しない・型・既定値)]] / 目次: [[React]]
 - [[Next.js]] / [[TypeScript]] / [[テスト]] / [[shadcn-ui]]
 - 公式: https://react.dev/learn/thinking-in-react , https://react.dev/reference/react/Profiler , https://react.dev/learn/react-developer-tools
