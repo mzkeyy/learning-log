@@ -99,5 +99,5 @@ Web 画面 ──▶ Web 用 BFF ──┐
 
 ## 関連
 - 前: [[アーキテクチャ設計_02_モノリスとマイクロサービス(モジュラーモノリス・分け方・Saga)]] / 次: [[アーキテクチャ設計_04_非同期処理とイベント駆動(キュー・Pub-Sub・冪等性)]]
-- [[GraphQL]] / [[Hono]] / [[Next.js_05_データ更新(Server Actions・フォーム)]] / [[HTTP・HTTPS・TLS]]
+- [[REST]] / [[GraphQL]] / [[Hono]] / [[Next.js_05_データ更新(Server Actions・フォーム)]] / [[HTTP・HTTPS・TLS]]
 - 参考: https://www.rfc-editor.org/rfc/rfc9457 , https://learn.microsoft.com/azure/architecture/best-practices/api-design , https://samnewman.io/patterns/architectural/bff/ , https://www.openapis.org/

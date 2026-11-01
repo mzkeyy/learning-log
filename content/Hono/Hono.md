@@ -63,5 +63,5 @@ export default app   // Cloudflare Workers / Bun / Deno はこれだけで動く
 
 ## 関連
 - [[Cloudflare]] / [[TypeScript]] / [[Next.js]] / [[TanStack Start]] / [[Vite]]
-- [[認証]] / [[Webセキュリティ対策]] / [[HTTP・HTTPS・TLS]]
+- [[認証]] / [[Webセキュリティ対策]] / [[HTTP・HTTPS・TLS]] / [[REST]]
 - [[AIアプリ開発]] / [[オブザーバビリティ]]

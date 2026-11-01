@@ -90,4 +90,5 @@ mutation CreatePost($input: CreatePostInput!) {
 
 ## 関連
 - 次: [[GraphQL_02_Fragmentの基礎]]
+- [[REST]]
 - 公式: https://graphql.org/learn/
