@@ -44,7 +44,7 @@ export function Counter() {
 | 形 | 道具 | 向く場面 |
 | --- | --- | --- |
 | 画面だけ(SPA) | **[[Vite]]** + React | 管理画面・ログイン後のアプリ。API は別に([[Hono]] など) |
-| フルスタック | **[[Next.js]]** / [[TanStack Start]] / React Router | SEO が要るサイト、サーバー処理も一緒に |
+| フルスタック | **[[Next.js]]** / [[TanStack Start]] / [[React Router]] | SEO が要るサイト、サーバー処理も一緒に |
 | モバイル | React Native(Expo) | iOS・Android アプリ |
 - 新しく始めるなら**フレームワーク(Next.js など)か Vite**。Create React App は終了している
 
@@ -57,6 +57,7 @@ export function Counter() {
 - 部品は [[shadcn-ui]] のようなコピーして使う UI 部品集が主流 → [[デザインシステム]]
 
 ## 関連
-- [[Next.js]] / [[Next.js_01_はじめに(React基礎・インストール・構成)]] / [[TanStack Start]] / [[Vite]]
+- [[Next.js]] / [[Next.js_01_はじめに(React基礎・インストール・構成)]] / [[TanStack Start]] / [[React Router]] / [[Vite]]
+- [[SSR]](サーバーで描く仕組みを自作して理解する)/ [[Zod]](フォームや API の入力の検証)
 - [[TypeScript]] / [[shadcn-ui]] / [[Tailwind CSS]] / [[テスト_04_コンポーネントテスト(Testing Library・Browser Mode)]] / [[コンポーネント設計]]
 - 公式: https://react.dev/learn , https://react.dev/reference/react
