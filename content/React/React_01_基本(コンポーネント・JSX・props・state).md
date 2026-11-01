@@ -44,6 +44,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 <Card title="お知らせ"><p>明日はメンテナンスです</p></Card>
 ```
 - 子から親へ伝えたいときは、**関数を props で渡す**(`onSelect={(id) => ...}`)
+- 分割代入する・しない書き方の違い、既定値、型 → [[React_06_propsの受け取り方(分割代入する・しない・型・既定値)]]
 
 ## state(状態)
 ```tsx

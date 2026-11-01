@@ -15,6 +15,7 @@ React の公式ドキュメント(react.dev、**2026年10月時点。React 19.3�
 | 03 | [[React_03_React 19の機能(Actions・use・Activity・Compiler)]] | フォームと Actions、楽観的更新、Compiler |
 | 04 | [[React_04_状態管理とデータ取得(Context・Zustand・TanStack Query)]] | 状態の置き場所、サーバーのデータ、フォーム |
 | 05 | [[React_05_実務(構成・性能・型・AI開発)]] | フォルダ構成、性能、TypeScript、チェックリスト |
+| 06 | [[React_06_propsの受け取り方(分割代入する・しない・型・既定値)]] | 分割代入する・しない書き方の比較、既定値、rest、型、ユニオン型、Fragment Colocation での名前 |
 
 ## React の考え方
 ```
